@@ -1,0 +1,2002 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚽ MvI Tournament</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       VARIABLES & RESET
+    ============================================================ */
+    :root {
+      --bg:           #06060f;
+      --surface:      #0d0d1e;
+      --card:         #12122a;
+      --card-2:       #181836;
+      --miguel:       #00b4ff;
+      --miguel-dark:  #006fcc;
+      --miguel-glow:  rgba(0,180,255,0.35);
+      --isaac:        #ff2d55;
+      --isaac-dark:   #bb1139;
+      --isaac-glow:   rgba(255,45,85,0.35);
+      --gold:         #ffd700;
+      --gold-dim:     #cc9e00;
+      --gold-glow:    rgba(255,215,0,0.3);
+      --purple:       #a855f7;
+      --purple-glow:  rgba(168,85,247,0.3);
+      --text:         #dde0f0;
+      --text-dim:     #6068a0;
+      --border:       rgba(255,255,255,0.06);
+      --border-gold:  rgba(255,215,0,0.2);
+      --radius:       14px;
+      --font-d:       'Bebas Neue', sans-serif;
+      --font-b:       'Rajdhani', sans-serif;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    html { scroll-behavior:smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-b);
+      font-size: 16px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Atmospheric background */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 40% at 10% 0%, rgba(0,180,255,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 90% 100%, rgba(255,45,85,0.05) 0%, transparent 60%),
+        repeating-linear-gradient(0deg,   transparent, transparent 59px, rgba(255,255,255,0.012) 60px),
+        repeating-linear-gradient(90deg,  transparent, transparent 59px, rgba(255,255,255,0.012) 60px);
+    }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    header {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(6,6,15,0.88);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      max-width: 1300px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; height: 72px;
+      gap: 16px;
+    }
+
+    .logo {
+      font-family: var(--font-d);
+      font-size: 26px; letter-spacing: 4px;
+      background: linear-gradient(90deg, var(--miguel) 0%, #fff 40%, var(--isaac) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .scoreboard {
+      display: flex; align-items: stretch;
+      border-radius: 50px; overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--card);
+      flex-shrink: 0;
+    }
+
+    .sb-player {
+      display: flex; align-items: center; gap: 12px;
+      padding: 8px 22px;
+      font-family: var(--font-d); font-size: 17px; letter-spacing: 1px;
+    }
+    .sb-player.miguel { color: var(--miguel); border-right: 1px solid var(--border); }
+    .sb-player.isaac  { color: var(--isaac);  border-left:  1px solid var(--border); }
+
+    .sb-num {
+      font-size: 30px; line-height: 1;
+      transition: all 0.4s cubic-bezier(.34,1.56,.64,1);
+    }
+
+    .sb-middle {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 6px 16px; min-width: 70px;
+    }
+    .sb-middle .num { font-family: var(--font-d); font-size: 22px; color: var(--gold); }
+    .sb-middle .lbl { font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
+
+    /* ============================================================
+       NAVIGATION
+    ============================================================ */
+    nav {
+      position: sticky; top: 72px; z-index: 190;
+      background: rgba(13,13,30,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1300px; margin: 0 auto;
+      display: flex; overflow-x: auto; gap: 0;
+      padding: 0 28px;
+      scrollbar-width: none;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+
+    .nav-btn {
+      padding: 15px 22px;
+      background: none; border: none;
+      color: var(--text-dim);
+      font-family: var(--font-b); font-size: 12px; font-weight: 600;
+      letter-spacing: 1.8px; text-transform: uppercase;
+      cursor: pointer; white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: color .2s, border-color .2s;
+    }
+    .nav-btn:hover { color: var(--text); }
+    .nav-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    /* ============================================================
+       MAIN
+    ============================================================ */
+    main {
+      max-width: 1300px; margin: 0 auto;
+      padding: 36px 28px 80px;
+      position: relative; z-index: 1;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; animation: fadeUp .35s ease forwards; }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(18px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ============================================================
+       TYPOGRAPHY
+    ============================================================ */
+    .page-title {
+      font-family: var(--font-d);
+      font-size: 40px; letter-spacing: 5px; text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .page-sub {
+      color: var(--text-dim); font-size: 14px; letter-spacing: 1px;
+      margin-bottom: 36px;
+    }
+
+    /* ============================================================
+       CARDS
+    ============================================================ */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-family: var(--font-d); font-size: 22px; letter-spacing: 2px;
+      margin-bottom: 22px;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .card-glow-miguel { box-shadow: 0 0 0 1px rgba(0,180,255,0.15), inset 0 1px 0 rgba(0,180,255,0.1); }
+    .card-glow-isaac  { box-shadow: 0 0 0 1px rgba(255,45,85,0.15),  inset 0 1px 0 rgba(255,45,85,0.1); }
+    .card-glow-gold   { box-shadow: 0 0 0 1px rgba(255,215,0,0.15),  inset 0 1px 0 rgba(255,215,0,0.08); }
+
+    /* ============================================================
+       FORMS
+    ============================================================ */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px; margin-bottom: 16px;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 7px; }
+
+    label {
+      font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
+      color: var(--text-dim); font-weight: 700;
+    }
+
+    input, select, textarea {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 11px 15px;
+      color: var(--text);
+      font-family: var(--font-b); font-size: 15px; font-weight: 500;
+      transition: border-color .2s, background .2s;
+      outline: none; width: 100%;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold);
+      background: rgba(255,215,0,0.04);
+    }
+    select option { background: #1a1a35; }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* Toggle */
+    .toggle-row {
+      display: flex; align-items: center; gap: 10px;
+      margin: 10px 0;
+    }
+    .toggle-row input[type=checkbox] {
+      width: 18px; height: 18px; cursor: pointer;
+      accent-color: var(--gold); flex-shrink: 0;
+    }
+    .toggle-row label {
+      text-transform: none; font-size: 14px; font-weight: 500;
+      letter-spacing: .5px; cursor: pointer; color: var(--text);
+    }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn {
+      padding: 12px 24px;
+      border: none; border-radius: 9px;
+      font-family: var(--font-b); font-size: 13px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: transform .18s, box-shadow .18s, opacity .18s;
+      white-space: nowrap;
+    }
+    .btn:active { transform: scale(.97) !important; }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), #e5a800);
+      color: #000;
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--gold-glow); }
+
+    .btn-miguel {
+      background: linear-gradient(135deg, var(--miguel), var(--miguel-dark));
+      color: #fff;
+    }
+    .btn-miguel:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--miguel-glow); }
+
+    .btn-isaac {
+      background: linear-gradient(135deg, var(--isaac), var(--isaac-dark));
+      color: #fff;
+    }
+    .btn-isaac:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--isaac-glow); }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-dim);
+    }
+    .btn-outline:hover { border-color: rgba(255,255,255,0.3); color: var(--text); }
+
+    .btn-danger {
+      background: rgba(255,45,85,0.1);
+      border: 1px solid rgba(255,45,85,0.25);
+      color: var(--isaac);
+    }
+    .btn-danger:hover { background: rgba(255,45,85,0.2); }
+
+    .btn-sm { padding: 7px 14px; font-size: 11px; }
+
+    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* ============================================================
+       MATCH CARD
+    ============================================================ */
+    .match-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid transparent;
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .25s, background .25s;
+    }
+    .match-card:hover { background: var(--card-2); }
+
+    .match-card.winner-miguel { border-left-color: var(--miguel); }
+    .match-card.winner-isaac  { border-left-color: var(--isaac); }
+    .match-card.is-draw       { border-left-color: var(--gold); }
+    .match-card.is-neutral    { border-left-color: var(--text-dim); opacity: .75; }
+    .match-card.is-penalties  { border-left-color: var(--purple); }
+
+    .mc-top {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .round-pill {
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-dim); background: rgba(255,255,255,0.05);
+      padding: 4px 12px; border-radius: 20px;
+    }
+
+    .mc-date { font-size: 11px; color: var(--text-dim); }
+
+    .mc-delete {
+      position: absolute; top: 14px; right: 14px;
+      background: none; border: none; color: var(--text-dim);
+      font-size: 16px; cursor: pointer; opacity: .3;
+      transition: opacity .2s, color .2s;
+      line-height: 1;
+    }
+    .mc-delete:hover { opacity: 1; color: var(--isaac); }
+
+    .mc-body {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center; gap: 20px;
+    }
+
+    .mc-team { display: flex; flex-direction: column; gap: 3px; }
+    .mc-team.right { text-align: right; align-items: flex-end; }
+
+    .mc-team-name {
+      font-family: var(--font-d); font-size: 21px; letter-spacing: 1px;
+      line-height: 1;
+    }
+    .mc-team-owner {
+      font-size: 10px; letter-spacing: 2px; font-weight: 700; text-transform: uppercase;
+    }
+    .mc-team-owner.miguel { color: var(--miguel); }
+    .mc-team-owner.isaac  { color: var(--isaac); }
+    .mc-team-owner.none   { color: var(--text-dim); }
+
+    .mc-center { text-align: center; }
+
+    .mc-score {
+      font-family: var(--font-d); font-size: 40px; letter-spacing: 4px;
+      line-height: 1;
+    }
+
+    .mc-pen {
+      font-size: 13px; color: var(--purple); letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .mc-verdict {
+      font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
+      font-weight: 700; margin-top: 8px;
+    }
+    .mc-verdict.miguel  { color: var(--miguel); }
+    .mc-verdict.isaac   { color: var(--isaac); }
+    .mc-verdict.draw    { color: var(--gold); }
+    .mc-verdict.neutral { color: var(--text-dim); }
+
+    .mc-obs {
+      margin-top: 14px; padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 13px; color: var(--text-dim); font-style: italic;
+    }
+
+    /* ============================================================
+       RIVALRY BAR
+    ============================================================ */
+    .rivalry-section {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px 28px;
+      margin-bottom: 22px;
+    }
+
+    .rivalry-header {
+      display: flex; justify-content: space-between;
+      font-size: 11px; letter-spacing: 2px; font-weight: 700;
+      text-transform: uppercase; margin-bottom: 12px;
+    }
+
+    .bar-wrap {
+      display: flex; height: 22px; border-radius: 11px;
+      overflow: hidden; background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+    }
+
+    .bar-m {
+      background: linear-gradient(90deg, var(--miguel-dark), var(--miguel));
+      transition: width 1.2s cubic-bezier(.34,1.2,.64,1);
+      display: flex; align-items: center; justify-content: flex-end;
+      padding-right: 10px;
+      font-size: 10px; font-weight: 700; color: rgba(255,255,255,.8);
+      min-width: 0; overflow: hidden;
+    }
+    .bar-i {
+      background: linear-gradient(90deg, var(--isaac), var(--isaac-dark));
+      transition: width 1.2s cubic-bezier(.34,1.2,.64,1);
+      display: flex; align-items: center;
+      padding-left: 10px;
+      font-size: 10px; font-weight: 700; color: rgba(255,255,255,.8);
+      min-width: 0; overflow: hidden;
+    }
+
+    .bar-footer {
+      display: flex; justify-content: space-between; margin-top: 10px;
+      font-size: 12px; font-weight: 600;
+    }
+
+    /* ============================================================
+       STATS GRID
+    ============================================================ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px; margin-bottom: 22px;
+    }
+
+    .stat-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 22px;
+      text-align: center;
+      transition: border-color .2s;
+    }
+    .stat-box:hover { border-color: var(--border-gold); }
+
+    .stat-val {
+      font-family: var(--font-d); font-size: 52px; line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-lbl {
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text-dim); font-weight: 600;
+    }
+
+    /* ============================================================
+       ROUNDS GRID
+    ============================================================ */
+    .rounds-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 16px;
+    }
+
+    .round-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: border-color .2s;
+    }
+    .round-card:hover { border-color: var(--border-gold); }
+
+    .round-hdr {
+      background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,215,0,0.03));
+      padding: 14px 18px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .round-name {
+      font-family: var(--font-d); font-size: 19px; letter-spacing: 2px; color: var(--gold);
+    }
+
+    .round-body { padding: 14px; }
+
+    .round-mini {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 10px; border-radius: 8px;
+      background: rgba(255,255,255,0.03);
+      margin-bottom: 7px; font-size: 13px; font-weight: 500;
+    }
+
+    /* ============================================================
+       PHASE HEADER (history)
+    ============================================================ */
+    .phase-hdr {
+      font-family: var(--font-d); font-size: 24px; letter-spacing: 3px; color: var(--gold);
+      margin: 36px 0 16px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-gold);
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    /* ============================================================
+       DRAW SECTION
+    ============================================================ */
+    .draw-arena {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 36px;
+      text-align: center; margin-bottom: 20px;
+    }
+
+    .draw-vs-display {
+      display: flex; align-items: center; justify-content: center; gap: 24px;
+      margin: 28px 0; flex-wrap: wrap;
+    }
+
+    .draw-team-box {
+      padding: 18px 28px; border-radius: 12px; min-width: 150px;
+      font-family: var(--font-d); font-size: 24px; letter-spacing: 1px;
+    }
+    .draw-team-box .owner-tag {
+      font-size: 10px; letter-spacing: 3px; font-weight: 700; margin-bottom: 6px;
+    }
+    .draw-team-box.m-box {
+      background: rgba(0,180,255,0.08); border: 2px solid var(--miguel); color: var(--miguel);
+    }
+    .draw-team-box.i-box {
+      background: rgba(255,45,85,0.08);  border: 2px solid var(--isaac);  color: var(--isaac);
+    }
+
+    .draw-vs-sep {
+      font-family: var(--font-d); font-size: 28px; color: var(--text-dim);
+    }
+
+    /* ============================================================
+       SIM RESULT
+    ============================================================ */
+    .sim-result {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 32px;
+      text-align: center; display: none; margin-bottom: 20px;
+    }
+    .sim-result.show { display: block; animation: fadeUp .4s ease; }
+
+    .sim-score-big {
+      font-family: var(--font-d); font-size: 64px; letter-spacing: 10px;
+      line-height: 1; margin: 16px 0;
+    }
+
+    /* ============================================================
+       TROPHY / LEADER
+    ============================================================ */
+    .leader-box { text-align: center; padding: 40px 20px; }
+    .leader-icon { font-size: 72px; display: block; margin-bottom: 16px; }
+    .leader-name { font-family: var(--font-d); font-size: 42px; letter-spacing: 4px; }
+    .leader-sub  { color: var(--text-dim); margin-top: 8px; font-size: 14px; }
+
+    /* ============================================================
+       TOAST
+    ============================================================ */
+    #toast {
+      position: fixed; bottom: 32px; right: 32px; z-index: 9999;
+      padding: 14px 24px;
+      background: var(--card-2); border: 1px solid var(--gold);
+      border-radius: 12px; color: var(--gold);
+      font-family: var(--font-b); font-weight: 600; font-size: 14px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.6);
+      transform: translateY(120px); opacity: 0;
+      transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+      pointer-events: none; max-width: 340px;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ============================================================
+       BADGES
+    ============================================================ */
+    .badge {
+      display: inline-block; padding: 3px 11px; border-radius: 20px;
+      font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .badge-m  { background: rgba(0,180,255,.15); color: var(--miguel); border: 1px solid rgba(0,180,255,.3); }
+    .badge-i  { background: rgba(255,45,85,.15);  color: var(--isaac);  border: 1px solid rgba(255,45,85,.3); }
+    .badge-d  { background: rgba(255,215,0,.15);  color: var(--gold);   border: 1px solid rgba(255,215,0,.3); }
+    .badge-p  { background: rgba(168,85,247,.15); color: var(--purple); border: 1px solid rgba(168,85,247,.3); }
+    .badge-n  { background: rgba(255,255,255,.06); color: var(--text-dim); border: 1px solid var(--border); }
+
+    /* ============================================================
+       EMPTY STATE
+    ============================================================ */
+    .empty-state {
+      text-align: center; padding: 60px 20px; color: var(--text-dim);
+    }
+    .empty-icon { font-size: 52px; display: block; margin-bottom: 14px; opacity: .35; }
+
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: none; }
+      50% { box-shadow: 0 0 40px 8px var(--gold-glow); }
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    .win-flash { animation: glow-pulse 0.8s ease 3; }
+    .shake-anim { animation: shake .5s ease; }
+
+    /* ============================================================
+       SCROLLBAR
+    ============================================================ */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.25); }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 700px) {
+      .header-inner { flex-direction: column; height: auto; padding: 14px 16px; gap: 10px; }
+      nav { top: 120px; }
+      .mc-body { grid-template-columns: 1fr; gap: 12px; }
+      .mc-team.right { text-align: left; align-items: flex-start; }
+      .mc-score { font-size: 32px; }
+      .sim-score-big { font-size: 44px; }
+      .page-title { font-size: 30px; }
+      main { padding: 24px 16px; }
+    }
+
+    /* ============================================================
+       SEPARATOR
+    ============================================================ */
+    .sep {
+      height: 1px; background: var(--border);
+      margin: 24px 0;
+    }
+
+    /* Quick rounds row */
+    .quick-rounds { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+    /* Team bank chip */
+    .team-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.05); border: 1px solid var(--border);
+      border-radius: 20px; padding: 6px 14px;
+      font-size: 13px; font-weight: 500;
+    }
+    .chip-rank { font-size: 10px; color: var(--gold); font-weight: 700; }
+    .chip-del { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 16px; line-height: 1; }
+    .chip-del:hover { color: var(--isaac); }
+
+    .teams-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    /* H2H Table */
+    .h2h-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 11px 14px; border-bottom: 1px solid var(--border);
+      font-size: 14px; font-weight: 500;
+    }
+    .h2h-row:last-child { border-bottom: none; }
+
+    /* Confirm dialog custom */
+    .confirm-overlay {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(0,0,0,.7); backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+    }
+    .confirm-overlay.show { display: flex; }
+    .confirm-box {
+      background: var(--card-2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 36px;
+      max-width: 420px; width: 90%; text-align: center;
+      animation: fadeUp .3s ease;
+    }
+    .confirm-box h3 { font-family: var(--font-d); font-size: 28px; margin-bottom: 12px; }
+    .confirm-box p { color: var(--text-dim); margin-bottom: 28px; font-size: 14px; }
+    .confirm-btns { display: flex; gap: 12px; justify-content: center; }
+  </style>
+</head>
+<body>
+
+<!-- CONFIRM DIALOG -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <h3 id="confirm-title">Tem certeza?</h3>
+    <p id="confirm-msg">Esta ação não pode ser desfeita.</p>
+    <div class="confirm-btns">
+      <button class="btn btn-danger" id="confirm-yes">Confirmar</button>
+      <button class="btn btn-outline" onclick="closeConfirm()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ============================================================
+     HEADER
+============================================================ -->
+<header>
+  <div class="header-inner">
+    <div class="logo">⚽ MVsI Tournament</div>
+    <div class="scoreboard">
+      <div class="sb-player miguel">
+        <span>MIGUEL</span>
+        <span class="sb-num" id="hdr-m">0</span>
+      </div>
+      <div class="sb-middle">
+        <div class="num" id="hdr-d">0</div>
+        <div class="lbl">Empates</div>
+      </div>
+      <div class="sb-player isaac">
+        <span class="sb-num" id="hdr-i">0</span>
+        <span>ISAAC</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     NAVIGATION
+============================================================ -->
+<nav>
+  <div class="nav-inner">
+    <button class="nav-btn active"  data-sec="dashboard"    onclick="go(this,'dashboard')">🏠 Dashboard</button>
+    <button class="nav-btn"         data-sec="registro"     onclick="go(this,'registro')">📝 Registrar</button>
+    <button class="nav-btn"         data-sec="rodadas"      onclick="go(this,'rodadas')">🏆 Rodadas</button>
+    <button class="nav-btn"         data-sec="historico"    onclick="go(this,'historico')">📋 Histórico</button>
+    <button class="nav-btn"         data-sec="sorteio"      onclick="go(this,'sorteio')">🎲 Sorteio</button>
+    <button class="nav-btn"         data-sec="simulacao"    onclick="go(this,'simulacao')">⚡ Simulação</button>
+    <button class="nav-btn"         data-sec="estatisticas" onclick="go(this,'estatisticas')">📊 Estatísticas</button>
+  </div>
+</nav>
+
+<!-- ============================================================
+     MAIN
+============================================================ -->
+<main>
+
+<!-- ===== DASHBOARD ===== -->
+<section id="sec-dashboard" class="section active">
+  <h1 class="page-title">🏆 Dashboard</h1>
+  <p class="page-sub">Visão geral do torneio em tempo real</p>
+
+  <div class="rivalry-section card-glow-gold">
+    <div class="rivalry-header">
+      <span style="color:var(--miguel)">🔵 MIGUEL</span>
+      <span style="color:var(--text-dim)">⚔️ RIVALIDADE</span>
+      <span style="color:var(--isaac)">ISAAC 🔴</span>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-m" id="bar-m" style="width:50%"></div>
+      <div class="bar-i" id="bar-i" style="width:50%"></div>
+    </div>
+    <div class="bar-footer">
+      <span style="color:var(--miguel)" id="bar-lm">0 vitórias</span>
+      <span style="color:var(--gold)"   id="bar-ld">0 empates</span>
+      <span style="color:var(--isaac)"  id="bar-li">0 vitórias</span>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-box" style="border-top:2px solid var(--miguel)">
+      <div class="stat-val" style="color:var(--miguel)" id="d-mw">0</div>
+      <div class="stat-lbl">Vitórias Miguel</div>
+    </div>
+    <div class="stat-box" style="border-top:2px solid var(--gold)">
+      <div class="stat-val" style="color:var(--gold)" id="d-dr">0</div>
+      <div class="stat-lbl">Empates</div>
+    </div>
+    <div class="stat-box" style="border-top:2px solid var(--isaac)">
+      <div class="stat-val" style="color:var(--isaac)" id="d-iw">0</div>
+      <div class="stat-lbl">Vitórias Isaac</div>
+    </div>
+    <div class="stat-box" style="border-top:2px solid var(--purple)">
+      <div class="stat-val" style="color:var(--purple)" id="d-pen">0</div>
+      <div class="stat-lbl">Decisões Pênaltis</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="d-total">0</div>
+      <div class="stat-lbl">Total de Partidas</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" id="d-rounds">0</div>
+      <div class="stat-lbl">Rodadas</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="card-title">⚡ Últimas Partidas</h3>
+    <div id="d-recent"></div>
+  </div>
+
+  <div class="card" id="d-leader"></div>
+</section>
+
+<!-- ===== REGISTRO ===== -->
+<section id="sec-registro" class="section">
+  <h1 class="page-title">📝 Registrar Partida</h1>
+  <p class="page-sub">Adicione o resultado de um confronto</p>
+
+  <div class="card">
+    <h3 class="card-title">🏟️ Configurar Confronto</h3>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Rodada / Fase existente</label>
+        <select id="r-round-sel">
+          <option value="">— Selecione —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Ou crie uma nova rodada</label>
+        <input type="text" id="r-round-new" placeholder="Ex: Copa Especial, Rodada 5...">
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>🔵 Time A (Casa)</label>
+        <input type="text" id="r-ta" placeholder="Ex: Chelsea, Flamengo...">
+      </div>
+      <div class="form-group">
+        <label>Controlado por</label>
+        <select id="r-oa">
+          <option value="miguel">🔵 Miguel</option>
+          <option value="isaac">🔴 Isaac</option>
+          <option value="none">➖ Nenhum</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Gols Time A</label>
+        <input type="number" id="r-ga" min="0" value="0">
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>🔴 Time B (Visitante)</label>
+        <input type="text" id="r-tb" placeholder="Ex: PSG, Palmeiras...">
+      </div>
+      <div class="form-group">
+        <label>Controlado por</label>
+        <select id="r-ob">
+          <option value="isaac">🔴 Isaac</option>
+          <option value="miguel">🔵 Miguel</option>
+          <option value="none">➖ Nenhum</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Gols Time B</label>
+        <input type="number" id="r-gb" min="0" value="0">
+      </div>
+    </div>
+
+    <div class="toggle-row">
+      <input type="checkbox" id="r-pen-chk" onchange="togglePen()">
+      <label for="r-pen-chk">🥅 Decisão por pênaltis (empate no tempo normal)</label>
+    </div>
+
+    <div id="pen-block" style="display:none" class="form-grid">
+      <div class="form-group">
+        <label>Pênaltis Time A</label>
+        <input type="number" id="r-pa" min="0" value="3">
+      </div>
+      <div class="form-group">
+        <label>Pênaltis Time B</label>
+        <input type="number" id="r-pb" min="0" value="2">
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-top:16px">
+      <label>💬 Observações (opcional)</label>
+      <textarea id="r-obs" placeholder="Ex: Jogo incrível! Gol no último minuto..."></textarea>
+    </div>
+
+    <div class="btn-row" style="margin-top:24px">
+      <button class="btn btn-gold" onclick="registerMatch()">✓ Registrar Partida</button>
+      <button class="btn btn-outline" onclick="clearReg()">↺ Limpar</button>
+    </div>
+  </div>
+
+  <!-- Live preview -->
+  <div id="reg-preview" class="sim-result">
+    <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px">Pré-visualização</div>
+    <div id="reg-preview-body"></div>
+  </div>
+</section>
+
+<!-- ===== RODADAS ===== -->
+<section id="sec-rodadas" class="section">
+  <h1 class="page-title">🏆 Rodadas</h1>
+  <p class="page-sub">Crie e gerencie as fases do torneio</p>
+
+  <div class="card">
+    <h3 class="card-title">➕ Nova Rodada</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nome da Rodada</label>
+        <input type="text" id="nr-name" placeholder="Ex: Rodada 3, Final, Copa Especial...">
+      </div>
+      <div class="form-group" style="justify-content:flex-end">
+        <button class="btn btn-gold" onclick="addRound()" style="align-self:flex-end">+ Criar Rodada</button>
+      </div>
+    </div>
+    <div class="quick-rounds">
+      <span style="font-size:11px;letter-spacing:1.5px;color:var(--text-dim);align-self:center;text-transform:uppercase">Rápido:</span>
+      <button class="btn btn-outline btn-sm" onclick="addRound('Rodada 1')">Rodada 1</button>
+      <button class="btn btn-outline btn-sm" onclick="addRound('Rodada 2')">Rodada 2</button>
+      <button class="btn btn-outline btn-sm" onclick="addRound('Rodada 3')">Rodada 3</button>
+      <button class="btn btn-outline btn-sm" onclick="addRound('Oitavas')">Oitavas</button>
+      <button class="btn btn-outline btn-sm" onclick="addRound('Quartas')">Quartas</button>
+      <button class="btn btn-outline btn-sm" onclick="addRound('Semifinal')">Semifinal</button>
+      <button class="btn btn-outline btn-sm" onclick="addRound('Final 🏆')">Final 🏆</button>
+    </div>
+  </div>
+
+  <div id="rounds-grid" class="rounds-grid"></div>
+</section>
+
+<!-- ===== HISTÓRICO ===== -->
+<section id="sec-historico" class="section">
+  <h1 class="page-title">📋 Histórico</h1>
+  <p class="page-sub">Todos os jogos registrados no torneio</p>
+
+  <div class="card" style="margin-bottom:20px">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+      <div class="form-group" style="flex:1;min-width:160px">
+        <label>Rodada</label>
+        <select id="f-round" onchange="renderHistory()">
+          <option value="">Todas</option>
+        </select>
+      </div>
+      <div class="form-group" style="flex:1;min-width:160px">
+        <label>Vencedor</label>
+        <select id="f-winner" onchange="renderHistory()">
+          <option value="">Todos</option>
+          <option value="miguel">🔵 Miguel</option>
+          <option value="isaac">🔴 Isaac</option>
+          <option value="draw">🤝 Empate</option>
+        </select>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="clearFilters()" style="align-self:flex-end">Limpar</button>
+    </div>
+  </div>
+
+  <div id="history-wrap"></div>
+</section>
+
+<!-- ===== SORTEIO ===== -->
+<section id="sec-sorteio" class="section">
+  <h1 class="page-title">🎲 Sorteio</h1>
+  <p class="page-sub">Distribua os times entre Miguel e Isaac</p>
+
+  <div class="card">
+    <h3 class="card-title">⚙️ Configurar Confronto</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Time A</label>
+        <input type="text" id="dw-ta" placeholder="Ex: Real Madrid">
+      </div>
+      <div class="form-group">
+        <label>Time B</label>
+        <input type="text" id="dw-tb" placeholder="Ex: Manchester City">
+      </div>
+    </div>
+    <div class="toggle-row">
+      <input type="checkbox" id="dw-fair" checked>
+      <label for="dw-fair">⚖️ Modo Justo — alterna automaticamente quem recebe a vantagem</label>
+    </div>
+    <div class="btn-row" style="margin-top:20px">
+      <button class="btn btn-gold" onclick="runDraw()">🎲 Sortear!</button>
+    </div>
+  </div>
+
+  <div id="draw-result" class="sim-result">
+    <div class="draw-vs-display" id="draw-display"></div>
+    <div id="draw-fair-msg" style="font-size:12px;color:var(--text-dim);margin-top:6px"></div>
+    <div class="btn-row" style="justify-content:center;margin-top:24px">
+      <button class="btn btn-gold"    onclick="importDraw()">📝 Usar no Registro</button>
+      <button class="btn btn-outline" onclick="runDraw()">🔄 Novo Sorteio</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 class="card-title">📋 Banco de Times</h3>
+    <p style="color:var(--text-dim);font-size:13px;margin-bottom:18px">
+      Cadastre times com ranking para sortear confrontos automaticamente.
+      Ranking 1 = melhor time.
+    </p>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nome do Time</label>
+        <input type="text" id="bk-name" placeholder="Ex: Bayern Munich">
+      </div>
+      <div class="form-group">
+        <label>Ranking (1 = melhor)</label>
+        <input type="number" id="bk-rank" min="1" value="10">
+      </div>
+    </div>
+    <div class="btn-row" style="margin-bottom:20px">
+      <button class="btn btn-outline" onclick="addToBank()">+ Adicionar ao Banco</button>
+      <button class="btn btn-gold"    onclick="drawFromBank()">🎲 Sortear do Banco</button>
+    </div>
+    <div id="bank-list" class="teams-wrap"></div>
+  </div>
+</section>
+
+<!-- ===== SIMULAÇÃO ===== -->
+<section id="sec-simulacao" class="section">
+  <h1 class="page-title">⚡ Simulação</h1>
+  <p class="page-sub">Gere um placar aleatório para qualquer confronto</p>
+
+  <div class="card">
+    <h3 class="card-title">🎮 Configurar Partida</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Time A</label>
+        <input type="text" id="s-ta" placeholder="Ex: Barcelona">
+      </div>
+      <div class="form-group">
+        <label>Controlado por</label>
+        <select id="s-oa">
+          <option value="miguel">🔵 Miguel</option>
+          <option value="isaac">🔴 Isaac</option>
+          <option value="none">➖ Nenhum</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Time B</label>
+        <input type="text" id="s-tb" placeholder="Ex: Juventus">
+      </div>
+      <div class="form-group">
+        <label>Controlado por</label>
+        <select id="s-ob">
+          <option value="isaac">🔴 Isaac</option>
+          <option value="miguel">🔵 Miguel</option>
+          <option value="none">➖ Nenhum</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group" style="max-width:280px">
+      <label>Rodada</label>
+      <select id="s-round">
+        <option value="Simulação">Simulação</option>
+      </select>
+    </div>
+    <div class="toggle-row" style="margin-top:8px">
+      <input type="checkbox" id="s-pen">
+      <label for="s-pen">🥅 Pode decidir por pênaltis (em caso de empate)</label>
+    </div>
+    <div class="btn-row" style="margin-top:20px">
+      <button class="btn btn-gold" onclick="runSim()">⚡ Simular Partida!</button>
+    </div>
+  </div>
+
+  <div id="sim-result" class="sim-result">
+    <div id="sim-body"></div>
+    <div class="btn-row" style="justify-content:center;margin-top:24px">
+      <button class="btn btn-gold"    onclick="saveSim()">💾 Salvar no Histórico</button>
+      <button class="btn btn-outline" onclick="runSim()">🔄 Simular de Novo</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ESTATÍSTICAS ===== -->
+<section id="sec-estatisticas" class="section">
+  <h1 class="page-title">📊 Estatísticas</h1>
+  <p class="page-sub">Análise completa da rivalidade</p>
+
+  <div id="stats-body"></div>
+
+  <div class="card" style="border:1px solid rgba(255,45,85,.25)">
+    <h3 class="card-title" style="color:var(--isaac)">⚠️ Zona de Perigo</h3>
+    <p style="color:var(--text-dim);font-size:14px;margin-bottom:20px">Ações irreversíveis — confirme antes de prosseguir.</p>
+    <div class="btn-row">
+      <button class="btn btn-danger" onclick="confirmAction('Apagar todos os dados?','Partidas, rodadas e banco de times serão removidos permanentemente.',clearAll)">🗑️ Apagar Tudo</button>
+      <button class="btn btn-danger" onclick="confirmAction('Apagar todas as partidas?','O histórico de partidas será removido permanentemente.',clearMatches)">🗑️ Apagar Partidas</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<!-- Firebase Realtime Database: cole suas credenciais no firebaseConfig abaixo. -->
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script>
+/* ============================================================
+   FIREBASE CONFIG
+   1. Crie um projeto no Firebase.
+   2. Ative Realtime Database em modo test durante o desenvolvimento.
+   3. Substitua os valores abaixo pelos dados do seu app Web Firebase.
+============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyAT19Xd37zNpXAJxleZek7rdWlsFll7SGA",
+  authDomain: "mvi-tournament.firebaseapp.com",
+  databaseURL: "https://mvi-tournament-default-rtdb.firebaseio.com",
+  projectId: "mvi-tournament",
+  storageBucket: "mvi-tournament.firebasestorage.app",
+  messagingSenderId: "326944575971",
+  appId: "1:326944575971:web:94a0c27785532728d910d6"
+};
+
+const FIREBASE_PATH = 'mvi_tournament/state';
+let firebaseStateRef = null;
+let firebaseIsReady = false;
+let applyingRemoteState = false;
+
+/* ============================================================
+   STATE
+============================================================ */
+let ST = {
+  rounds:    [],
+  matches:   [],
+  bank:      [],
+  fairCount: 0, // tracks fair-mode alternation
+  _lastDraw: null,
+  _lastSim:  null
+};
+
+/* ============================================================
+   PERSIST
+============================================================ */
+function hasFirebaseConfig() {
+  return firebaseConfig.apiKey && !firebaseConfig.apiKey.includes('COLE_') &&
+    firebaseConfig.projectId && !firebaseConfig.projectId.includes('SEU_PROJETO') &&
+    firebaseConfig.databaseURL && !firebaseConfig.databaseURL.includes('SEU_PROJETO');
+}
+
+function stateForSave() {
+  return {
+    rounds: ST.rounds || [],
+    matches: ST.matches || [],
+    bank: ST.bank || [],
+    fairCount: ST.fairCount || 0,
+    _lastDraw: ST._lastDraw || null,
+    _lastSim: ST._lastSim || null
+  };
+}
+
+function applyState(nextState) {
+  if (!nextState) return;
+  ST = { ...ST, ...nextState };
+}
+
+function saveLocal() {
+  localStorage.setItem('mvi_v2', JSON.stringify(stateForSave()));
+}
+
+function saveOnline() {
+  if (!firebaseIsReady || !firebaseStateRef || applyingRemoteState) return;
+  firebaseStateRef.set({
+    state: stateForSave(),
+    updatedAt: new Date().toISOString()
+  }).catch(err => {
+    console.warn('Firebase: erro ao salvar online', err);
+    toast('Dados salvos neste dispositivo. Firebase não aceitou a gravação.');
+  });
+}
+
+function save() {
+  saveLocal();
+  saveOnline();
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem('mvi_v2');
+    if (raw) applyState(JSON.parse(raw));
+  } catch(e) {}
+}
+
+function initFirebase() {
+  if (!hasFirebaseConfig()) {
+    console.info('Firebase: configure firebaseConfig para ativar a sincronização online.');
+    return;
+  }
+
+  if (!window.firebase) {
+    console.warn('Firebase: SDK não foi carregado. Verifique a conexão com a internet.');
+    return;
+  }
+
+  try {
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    firebaseStateRef = firebase.database().ref(FIREBASE_PATH);
+    firebaseIsReady = true;
+
+    firebaseStateRef.on('value', snapshot => {
+      const data = snapshot.val();
+      if (!data || !data.state) {
+        saveOnline();
+        return;
+      }
+
+      applyingRemoteState = true;
+      applyState(data.state);
+      saveLocal();
+      applyingRemoteState = false;
+      renderCurrentSection();
+    }, err => {
+      console.warn('Firebase: erro ao carregar dados online', err);
+      toast('Não foi possível carregar os dados online agora.');
+    });
+  } catch (err) {
+    console.warn('Firebase: erro de inicialização', err);
+  }
+}
+
+/* ============================================================
+   NAV
+============================================================ */
+function go(btn, sec) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + sec).classList.add('active');
+  btn.classList.add('active');
+  render(sec);
+}
+
+/* ============================================================
+   TOAST
+============================================================ */
+let _toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+}
+
+/* ============================================================
+   CONFIRM
+============================================================ */
+function confirmAction(title, msg, cb) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').textContent   = msg;
+  document.getElementById('confirm-yes').onclick = () => { closeConfirm(); cb(); };
+  document.getElementById('confirm-overlay').classList.add('show');
+}
+function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('show'); }
+
+/* ============================================================
+   SCORES
+============================================================ */
+function scores() {
+  let m=0, i=0, d=0, pen=0, neutral=0;
+  ST.matches.forEach(mx => {
+    if      (mx.winner === 'miguel')  m++;
+    else if (mx.winner === 'isaac')   i++;
+    else if (mx.winner === 'draw')    d++;
+    else                              neutral++;
+    if (mx.penalties) pen++;
+  });
+  return { m, i, d, pen, neutral, total: ST.matches.length };
+}
+
+function calcWinner(mx) {
+  // Same-owner matches don't count
+  if (mx.ownerA !== 'none' && mx.ownerA === mx.ownerB) return 'neutral';
+
+  const gA = +mx.goalsA, gB = +mx.goalsB;
+
+  if (mx.penalties) {
+    const pA = +mx.penA, pB = +mx.penB;
+    if (pA > pB) return mx.ownerA !== 'none' ? mx.ownerA : 'neutral';
+    if (pB > pA) return mx.ownerB !== 'none' ? mx.ownerB : 'neutral';
+    return 'draw';
+  }
+
+  if (gA > gB) return mx.ownerA !== 'none' ? mx.ownerA : 'neutral';
+  if (gB > gA) return mx.ownerB !== 'none' ? mx.ownerB : 'neutral';
+  return 'draw';
+}
+
+/* ============================================================
+   HEADER
+============================================================ */
+function updateHeader() {
+  const s = scores();
+  animNum('hdr-m', s.m);
+  animNum('hdr-i', s.i);
+  animNum('hdr-d', s.d);
+}
+
+function animNum(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (el.textContent !== String(val)) {
+    el.style.transform = 'scale(1.4)';
+    el.style.opacity   = '0.4';
+    setTimeout(() => {
+      el.textContent   = val;
+      el.style.transform = '';
+      el.style.opacity   = '';
+    }, 160);
+  }
+}
+
+/* ============================================================
+   ROUNDS
+============================================================ */
+function addRound(name) {
+  const val = name || (document.getElementById('nr-name').value.trim());
+  if (!val) { toast('⚠️ Digite o nome da rodada'); return; }
+  if (ST.rounds.includes(val)) { toast('⚠️ Rodada "' + val + '" já existe'); return; }
+  ST.rounds.push(val);
+  save();
+  if (!name) document.getElementById('nr-name').value = '';
+  updateRoundSelects();
+  renderRounds();
+  toast('✅ Rodada "' + val + '" criada!');
+}
+
+function deleteRound(name) {
+  confirmAction(
+    'Apagar rodada "' + name + '"?',
+    'As partidas desta rodada serão mantidas no histórico.',
+    () => {
+      ST.rounds = ST.rounds.filter(r => r !== name);
+      save(); updateRoundSelects(); renderRounds();
+      toast('🗑️ Rodada removida');
+    }
+  );
+}
+
+function updateRoundSelects() {
+  const ids = ['r-round-sel','f-round','s-round'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const cur = el.value;
+    const ph = id === 'f-round'   ? '<option value="">Todas</option>'
+             : id === 'r-round-sel' ? '<option value="">— Selecione —</option>'
+             : '';
+    el.innerHTML = ph + ST.rounds.map(r => `<option value="${escHtml(r)}">${escHtml(r)}</option>`).join('');
+    el.value = cur;
+  });
+}
+
+/* ============================================================
+   REGISTER MATCH
+============================================================ */
+function togglePen() {
+  document.getElementById('pen-block').style.display =
+    document.getElementById('r-pen-chk').checked ? 'grid' : 'none';
+}
+
+function registerMatch() {
+  const roundSel = document.getElementById('r-round-sel').value.trim();
+  const roundNew = document.getElementById('r-round-new').value.trim();
+  const round    = roundNew || roundSel;
+
+  if (!round)   { toast('⚠️ Selecione ou crie uma rodada'); flashShake('r-round-sel'); return; }
+
+  const ta = document.getElementById('r-ta').value.trim();
+  const tb = document.getElementById('r-tb').value.trim();
+  if (!ta || !tb) { toast('⚠️ Preencha os dois times'); return; }
+
+  const ownerA = document.getElementById('r-oa').value;
+  const ownerB = document.getElementById('r-ob').value;
+  const goalsA = Math.max(0, parseInt(document.getElementById('r-ga').value) || 0);
+  const goalsB = Math.max(0, parseInt(document.getElementById('r-gb').value) || 0);
+  const hasPen = document.getElementById('r-pen-chk').checked;
+  const penA   = hasPen ? Math.max(0, parseInt(document.getElementById('r-pa').value) || 0) : null;
+  const penB   = hasPen ? Math.max(0, parseInt(document.getElementById('r-pb').value) || 0) : null;
+  const obs    = document.getElementById('r-obs').value.trim();
+
+  // Auto-create round
+  if (roundNew && !ST.rounds.includes(roundNew)) { ST.rounds.push(roundNew); }
+
+  const mx = { id: Date.now(), round, teamA:ta, teamB:tb, ownerA, ownerB, goalsA, goalsB, penalties:hasPen, penA, penB, obs, date: todayStr() };
+  mx.winner = calcWinner(mx);
+  ST.matches.push(mx);
+  save();
+
+  updateHeader(); updateRoundSelects();
+  toast('⚽ Partida registrada! ' + ta + ' ' + goalsA + ' × ' + goalsB + ' ' + tb);
+
+  // Glow on winning matches
+  if (mx.winner !== 'draw' && mx.winner !== 'neutral') {
+    document.querySelector('.card').classList.add('win-flash');
+    setTimeout(() => document.querySelector('.card').classList.remove('win-flash'), 2500);
+  }
+  clearReg();
+}
+
+function clearReg() {
+  ['r-ta','r-tb','r-obs','r-round-new'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('r-round-sel').value = '';
+  document.getElementById('r-oa').value = 'miguel';
+  document.getElementById('r-ob').value = 'isaac';
+  document.getElementById('r-ga').value = '0';
+  document.getElementById('r-gb').value = '0';
+  document.getElementById('r-pen-chk').checked = false;
+  document.getElementById('pen-block').style.display = 'none';
+  document.getElementById('r-pa').value = '3';
+  document.getElementById('r-pb').value = '2';
+  document.getElementById('reg-preview').classList.remove('show');
+}
+
+function flashShake(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('shake-anim');
+  setTimeout(() => el.classList.remove('shake-anim'), 600);
+}
+
+/* ============================================================
+   DELETE MATCH
+============================================================ */
+function deleteMatch(id) {
+  confirmAction('Apagar esta partida?', 'Esta ação é permanente.', () => {
+    ST.matches = ST.matches.filter(m => m.id !== id);
+    save(); updateHeader(); renderHistory(); renderRounds(); renderStats();
+    toast('🗑️ Partida removida');
+  });
+}
+
+/* ============================================================
+   RENDER MATCH CARD
+============================================================ */
+const OWNER_NAME  = { miguel:'Miguel', isaac:'Isaac', none:'—' };
+const OWNER_CLASS = { miguel:'miguel',  isaac:'isaac', none:'none' };
+
+function matchCard(mx, canDelete=true) {
+  const borderClass = mx.penalties && mx.winner !== 'neutral'
+    ? 'is-penalties'
+    : mx.winner === 'draw'    ? 'is-draw'
+    : mx.winner === 'miguel'  ? 'winner-miguel'
+    : mx.winner === 'isaac'   ? 'winner-isaac'
+    : 'is-neutral';
+
+  const verdictMap = {
+    miguel:  '<div class="mc-verdict miguel">⚽ Miguel Vence!</div>',
+    isaac:   '<div class="mc-verdict isaac">⚽ Isaac Vence!</div>',
+    draw:    '<div class="mc-verdict draw">🤝 Empate</div>',
+    neutral: '<div class="mc-verdict neutral">➖ Sem Pontuação</div>'
+  };
+
+  const delBtn = canDelete
+    ? `<button class="mc-delete" onclick="deleteMatch(${mx.id})" title="Apagar partida">✕</button>` : '';
+
+  const penLine = mx.penalties
+    ? `<div class="mc-pen">🥅 Pênaltis: ${mx.penA} × ${mx.penB}</div>` : '';
+
+  const obsLine = mx.obs
+    ? `<div class="mc-obs">💬 ${escHtml(mx.obs)}</div>` : '';
+
+  const penBadge = mx.penalties ? ' <span class="badge badge-p">Pênaltis</span>' : '';
+
+  return `
+  <div class="match-card ${borderClass}">
+    ${delBtn}
+    <div class="mc-top">
+      <span class="round-pill">${escHtml(mx.round)}${penBadge}</span>
+      <span class="mc-date">${mx.date}</span>
+    </div>
+    <div class="mc-body">
+      <div class="mc-team">
+        <div class="mc-team-name">${escHtml(mx.teamA)}</div>
+        <div class="mc-team-owner ${OWNER_CLASS[mx.ownerA]}">${OWNER_NAME[mx.ownerA]}</div>
+      </div>
+      <div class="mc-center">
+        <div class="mc-score">${mx.goalsA}<span style="color:var(--text-dim);margin:0 8px">×</span>${mx.goalsB}</div>
+        ${penLine}
+        ${verdictMap[mx.winner] || ''}
+      </div>
+      <div class="mc-team right">
+        <div class="mc-team-name">${escHtml(mx.teamB)}</div>
+        <div class="mc-team-owner ${OWNER_CLASS[mx.ownerB]}">${OWNER_NAME[mx.ownerB]}</div>
+      </div>
+    </div>
+    ${obsLine}
+  </div>`;
+}
+
+/* ============================================================
+   RENDER ROUNDS
+============================================================ */
+function renderRounds() {
+  const el = document.getElementById('rounds-grid');
+  if (!el) return;
+
+  if (!ST.rounds.length) {
+    el.innerHTML = '<div class="empty-state"><span class="empty-icon">🏆</span><p>Nenhuma rodada criada ainda</p></div>';
+    return;
+  }
+
+  el.innerHTML = ST.rounds.map(rnd => {
+    const ms   = ST.matches.filter(m => m.round === rnd);
+    const mw   = ms.filter(m => m.winner === 'miguel').length;
+    const iw   = ms.filter(m => m.winner === 'isaac').length;
+    const dr   = ms.filter(m => m.winner === 'draw').length;
+
+    const minis = ms.length
+      ? ms.map(m => `
+          <div class="round-mini">
+            <span style="color:var(--${m.ownerA === 'miguel' ? 'miguel' : m.ownerA === 'isaac' ? 'isaac' : 'text-dim'})">${escHtml(m.teamA)}</span>
+            <span style="font-family:var(--font-d);letter-spacing:1px">${m.goalsA}×${m.goalsB}</span>
+            <span style="color:var(--${m.ownerB === 'miguel' ? 'miguel' : m.ownerB === 'isaac' ? 'isaac' : 'text-dim'})">${escHtml(m.teamB)}</span>
+          </div>`).join('')
+      : '<div style="color:var(--text-dim);font-size:13px;padding:4px">Sem partidas ainda</div>';
+
+    return `
+    <div class="round-card">
+      <div class="round-hdr">
+        <span class="round-name">${escHtml(rnd)}</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="color:var(--text-dim);font-size:12px">${ms.length} jogo${ms.length!==1?'s':''}</span>
+          <button class="btn btn-danger btn-sm" onclick="deleteRound('${escHtml(rnd)}')">✕</button>
+        </div>
+      </div>
+      <div class="round-body">
+        ${minis}
+        ${ms.length ? `
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+          ${mw ? `<span class="badge badge-m">M: ${mw}</span>` : ''}
+          ${dr ? `<span class="badge badge-d">E: ${dr}</span>` : ''}
+          ${iw ? `<span class="badge badge-i">I: ${iw}</span>` : ''}
+        </div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ============================================================
+   RENDER HISTORY
+============================================================ */
+function renderHistory() {
+  const el = document.getElementById('history-wrap');
+  if (!el) return;
+
+  const rf = document.getElementById('f-round').value;
+  const wf = document.getElementById('f-winner').value;
+
+  let ms = [...ST.matches].reverse();
+  if (rf) ms = ms.filter(m => m.round === rf);
+  if (wf) ms = ms.filter(m => m.winner === wf);
+
+  if (!ms.length) {
+    el.innerHTML = '<div class="empty-state"><span class="empty-icon">📋</span><p>Nenhuma partida encontrada</p></div>';
+    return;
+  }
+
+  // Group by round
+  const groups = {};
+  ms.forEach(m => { if (!groups[m.round]) groups[m.round] = []; groups[m.round].push(m); });
+
+  el.innerHTML = Object.entries(groups).map(([rnd, arr]) => `
+    <div class="phase-hdr">🏟️ ${escHtml(rnd)} <span style="font-size:13px;color:var(--text-dim)">${arr.length} jogo${arr.length!==1?'s':''}</span></div>
+    ${arr.map(m => matchCard(m)).join('')}
+  `).join('');
+}
+
+function clearFilters() {
+  document.getElementById('f-round').value  = '';
+  document.getElementById('f-winner').value = '';
+  renderHistory();
+}
+
+/* ============================================================
+   DRAW
+============================================================ */
+function runDraw() {
+  const a = document.getElementById('dw-ta').value.trim();
+  const b = document.getElementById('dw-tb').value.trim();
+  if (!a || !b) { toast('⚠️ Digite os dois times'); return; }
+
+  const fair = document.getElementById('dw-fair').checked;
+  let miguelTeam, isaacTeam;
+
+  if (fair) {
+    // Even turns: Miguel picks first; odd turns: Isaac picks first
+    const pickFirst = ST.fairCount % 2 === 0 ? 'miguel' : 'isaac';
+    const coin      = Math.random() < 0.5;
+    if (pickFirst === 'miguel') {
+      miguelTeam = coin ? a : b;
+      isaacTeam  = coin ? b : a;
+    } else {
+      isaacTeam  = coin ? a : b;
+      miguelTeam = coin ? b : a;
+    }
+    ST.fairCount++;
+    save();
+  } else {
+    miguelTeam = Math.random() < 0.5 ? a : b;
+    isaacTeam  = miguelTeam === a ? b : a;
+  }
+
+  ST._lastDraw = { miguelTeam, isaacTeam };
+
+  document.getElementById('draw-display').innerHTML = `
+    <div class="draw-team-box m-box">
+      <div class="owner-tag">🔵 MIGUEL</div>
+      <div>${escHtml(miguelTeam)}</div>
+    </div>
+    <div class="draw-vs-sep">VS</div>
+    <div class="draw-team-box i-box">
+      <div class="owner-tag">🔴 ISAAC</div>
+      <div>${escHtml(isaacTeam)}</div>
+    </div>`;
+
+  document.getElementById('draw-fair-msg').textContent =
+    fair ? '⚖️ Modo Justo ativo — turno ' + ST.fairCount : '';
+
+  document.getElementById('draw-result').classList.add('show');
+  document.getElementById('draw-result').classList.add('win-flash');
+  setTimeout(() => document.getElementById('draw-result').classList.remove('win-flash'), 2500);
+  toast('🎲 Times sorteados!');
+}
+
+function importDraw() {
+  if (!ST._lastDraw) return;
+  document.getElementById('r-ta').value = ST._lastDraw.miguelTeam;
+  document.getElementById('r-oa').value = 'miguel';
+  document.getElementById('r-tb').value = ST._lastDraw.isaacTeam;
+  document.getElementById('r-ob').value = 'isaac';
+  // Navigate to registro
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-registro').classList.add('active');
+  document.querySelector('[data-sec=registro]').classList.add('active');
+  toast('✅ Times importados para o Registro!');
+}
+
+/* ============================================================
+   TEAM BANK
+============================================================ */
+function addToBank() {
+  const name = document.getElementById('bk-name').value.trim();
+  const rank = parseInt(document.getElementById('bk-rank').value) || 10;
+  if (!name) { toast('⚠️ Digite o nome do time'); return; }
+  if (ST.bank.find(t => t.name === name)) { toast('⚠️ Time já existe'); return; }
+  ST.bank.push({ name, rank });
+  ST.bank.sort((a,b) => a.rank - b.rank);
+  save();
+  document.getElementById('bk-name').value = '';
+  document.getElementById('bk-rank').value = '10';
+  renderBank();
+  toast('✅ ' + name + ' adicionado!');
+}
+
+function removeFromBank(name) {
+  ST.bank = ST.bank.filter(t => t.name !== name);
+  save(); renderBank();
+}
+
+function renderBank() {
+  const el = document.getElementById('bank-list');
+  if (!el) return;
+  if (!ST.bank.length) {
+    el.innerHTML = '<span style="color:var(--text-dim);font-size:13px">Nenhum time cadastrado</span>';
+    return;
+  }
+  el.innerHTML = ST.bank.map(t => `
+    <div class="team-chip">
+      <span class="chip-rank">#${t.rank}</span>
+      <span>${escHtml(t.name)}</span>
+      <button class="chip-del" onclick="removeFromBank('${escHtml(t.name)}')" title="Remover">×</button>
+    </div>`).join('');
+}
+
+function drawFromBank() {
+  if (ST.bank.length < 2) { toast('⚠️ Adicione pelo menos 2 times ao banco'); return; }
+  const shuffled = [...ST.bank].sort(() => Math.random() - 0.5);
+  document.getElementById('dw-ta').value = shuffled[0].name;
+  document.getElementById('dw-tb').value = shuffled[1].name;
+  runDraw();
+}
+
+/* ============================================================
+   SIMULATION
+============================================================ */
+function runSim() {
+  const ta = document.getElementById('s-ta').value.trim();
+  const tb = document.getElementById('s-tb').value.trim();
+  if (!ta || !tb) { toast('⚠️ Preencha os dois times'); return; }
+
+  const ownerA  = document.getElementById('s-oa').value;
+  const ownerB  = document.getElementById('s-ob').value;
+  const round   = document.getElementById('s-round').value || 'Simulação';
+  const canPen  = document.getElementById('s-pen').checked;
+
+  const gA = rndGoals(), gB = rndGoals();
+  let hasPen = false, pA = null, pB = null;
+
+  if (gA === gB && canPen) {
+    hasPen = true;
+    do { pA = rndInt(3,7); pB = rndInt(3,7); } while (pA === pB);
+  }
+
+  const mx = { id: Date.now(), round, teamA:ta, teamB:tb, ownerA, ownerB,
+               goalsA:gA, goalsB:gB, penalties:hasPen, penA:pA, penB:pB,
+               obs:'⚡ Resultado simulado automaticamente', date: todayStr() };
+  mx.winner = calcWinner(mx);
+  ST._lastSim = mx;
+
+  const oc = { miguel:'var(--miguel)', isaac:'var(--isaac)', none:'var(--text)' };
+  const on = { miguel:'Miguel',        isaac:'Isaac',        none:'—' };
+
+  let verdictHTML = '';
+  if      (mx.winner === 'miguel')  verdictHTML = `<div class="mc-verdict miguel" style="font-size:18px;margin-top:12px">🏆 MIGUEL VENCE!</div>`;
+  else if (mx.winner === 'isaac')   verdictHTML = `<div class="mc-verdict isaac"  style="font-size:18px;margin-top:12px">🏆 ISAAC VENCE!</div>`;
+  else if (mx.winner === 'draw')    verdictHTML = `<div class="mc-verdict draw"   style="font-size:18px;margin-top:12px">🤝 EMPATE!</div>`;
+  else                              verdictHTML = `<div class="mc-verdict neutral" style="font-size:18px;margin-top:12px">➖ Jogo Neutro</div>`;
+
+  document.getElementById('sim-body').innerHTML = `
+    <div style="display:flex;justify-content:center;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:12px">
+      <div style="text-align:right">
+        <div style="font-family:var(--font-d);font-size:26px;color:${oc[ownerA]}">${escHtml(ta)}</div>
+        <div style="font-size:11px;letter-spacing:2px;color:${oc[ownerA]};font-weight:700">${on[ownerA]}</div>
+      </div>
+      <div class="sim-score-big">${gA}<span style="color:var(--text-dim);margin:0 10px">×</span>${gB}</div>
+      <div style="text-align:left">
+        <div style="font-family:var(--font-d);font-size:26px;color:${oc[ownerB]}">${escHtml(tb)}</div>
+        <div style="font-size:11px;letter-spacing:2px;color:${oc[ownerB]};font-weight:700">${on[ownerB]}</div>
+      </div>
+    </div>
+    ${hasPen ? `<div style="color:var(--purple);font-size:15px;margin-top:4px">🥅 Pênaltis: ${pA} × ${pB}</div>` : ''}
+    ${verdictHTML}`;
+
+  const res = document.getElementById('sim-result');
+  res.classList.add('show');
+  res.classList.add('win-flash');
+  setTimeout(() => res.classList.remove('win-flash'), 2500);
+}
+
+function saveSim() {
+  if (!ST._lastSim) { toast('⚠️ Simule uma partida primeiro'); return; }
+  if (!ST.rounds.includes(ST._lastSim.round)) ST.rounds.push(ST._lastSim.round);
+  ST.matches.push({ ...ST._lastSim, id: Date.now() });
+  save(); updateHeader(); updateRoundSelects();
+  toast('💾 Resultado salvo no histórico!');
+}
+
+function rndGoals() {
+  const r = Math.random();
+  return r < 0.13 ? 0 : r < 0.33 ? 1 : r < 0.58 ? 2 : r < 0.78 ? 3 : r < 0.92 ? 4 : 5;
+}
+function rndInt(a,b) { return Math.floor(Math.random()*(b-a+1))+a; }
+
+/* ============================================================
+   RENDER DASHBOARD
+============================================================ */
+function renderDashboard() {
+  const s = scores();
+
+  // Stats
+  setTxt('d-mw', s.m);
+  setTxt('d-dr', s.d);
+  setTxt('d-iw', s.i);
+  setTxt('d-pen', s.pen);
+  setTxt('d-total', s.total);
+  setTxt('d-rounds', ST.rounds.length);
+
+  // Bar
+  const cnt  = s.m + s.i;
+  const mPct = cnt > 0 ? Math.round((s.m / cnt) * 100) : 50;
+  const iPct = 100 - mPct;
+  document.getElementById('bar-m').style.width = mPct + '%';
+  document.getElementById('bar-i').style.width = iPct + '%';
+  document.getElementById('bar-m').textContent = cnt > 0 ? mPct + '%' : '';
+  document.getElementById('bar-i').textContent = cnt > 0 ? iPct + '%' : '';
+  setTxt('bar-lm', s.m + ' vitória' + (s.m !== 1 ? 's' : ''));
+  setTxt('bar-ld', s.d + ' empate' + (s.d !== 1 ? 's' : ''));
+  setTxt('bar-li', s.i + ' vitória' + (s.i !== 1 ? 's' : ''));
+
+  // Recent
+  const recent = [...ST.matches].reverse().slice(0, 4);
+  const rEl = document.getElementById('d-recent');
+  rEl.innerHTML = recent.length
+    ? recent.map(m => matchCard(m, false)).join('')
+    : '<div class="empty-state"><span class="empty-icon">⚽</span><p>Nenhuma partida registrada ainda</p><p style="margin-top:8px;font-size:13px">Vá em <strong>Registrar</strong> para começar!</p></div>';
+
+  // Leader
+  const lEl = document.getElementById('d-leader');
+  if (!s.total) {
+    lEl.innerHTML = `<div class="leader-box"><span class="leader-icon">🏆</span><div class="leader-name" style="color:var(--gold)">Comece a Jogar!</div><div class="leader-sub">Registre partidas para ver o líder do torneio</div></div>`;
+  } else if (s.m > s.i) {
+    lEl.innerHTML = `<div class="leader-box"><span class="leader-icon" style="filter:drop-shadow(0 0 24px var(--miguel))">🔵</span><div class="leader-name" style="color:var(--miguel)">MIGUEL LIDERA</div><div class="leader-sub">${s.m} vitória${s.m!==1?'s':''} × ${s.i} do Isaac (${s.d} empate${s.d!==1?'s':''})</div></div>`;
+  } else if (s.i > s.m) {
+    lEl.innerHTML = `<div class="leader-box"><span class="leader-icon" style="filter:drop-shadow(0 0 24px var(--isaac))">🔴</span><div class="leader-name" style="color:var(--isaac)">ISAAC LIDERA</div><div class="leader-sub">${s.i} vitória${s.i!==1?'s':''} × ${s.m} do Miguel (${s.d} empate${s.d!==1?'s':''})</div></div>`;
+  } else {
+    lEl.innerHTML = `<div class="leader-box"><span class="leader-icon">🤝</span><div class="leader-name" style="color:var(--gold)">EMPATE GERAL</div><div class="leader-sub">Cada um com ${s.m} vitória${s.m!==1?'s':''} — acirrado!</div></div>`;
+  }
+}
+
+/* ============================================================
+   RENDER STATS
+============================================================ */
+function renderStats() {
+  const el = document.getElementById('stats-body');
+  if (!el) return;
+
+  const s = scores();
+
+  // Goals
+  let gM=0, gI=0, penM=0, penI=0;
+  ST.matches.forEach(m => {
+    if (m.ownerA==='miguel') gM += +m.goalsA; if (m.ownerA==='isaac') gI += +m.goalsA;
+    if (m.ownerB==='miguel') gM += +m.goalsB; if (m.ownerB==='isaac') gI += +m.goalsB;
+    if (m.winner==='miguel' && m.penalties) penM++;
+    if (m.winner==='isaac'  && m.penalties) penI++;
+  });
+
+  // Biggest win
+  let bigWin = null;
+  ST.matches.forEach(m => {
+    const d = Math.abs(m.goalsA - m.goalsB);
+    if (!bigWin || d > Math.abs(bigWin.goalsA - bigWin.goalsB)) bigWin = m;
+  });
+
+  // Most played teams
+  const teamCounts = {};
+  ST.matches.forEach(m => {
+    teamCounts[m.teamA] = (teamCounts[m.teamA]||0)+1;
+    teamCounts[m.teamB] = (teamCounts[m.teamB]||0)+1;
+  });
+  const topTeams = Object.entries(teamCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  const winPct = s.total > 0
+    ? (((s.m + s.i) / s.total) * 100).toFixed(0) + '%'
+    : '—';
+
+  el.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-box" style="border-top:2px solid var(--miguel)">
+        <div class="stat-val" style="color:var(--miguel)">${gM}</div>
+        <div class="stat-lbl">Gols do Miguel</div>
+      </div>
+      <div class="stat-box" style="border-top:2px solid var(--isaac)">
+        <div class="stat-val" style="color:var(--isaac)">${gI}</div>
+        <div class="stat-lbl">Gols do Isaac</div>
+      </div>
+      <div class="stat-box" style="border-top:2px solid var(--purple)">
+        <div class="stat-val" style="color:var(--purple)">${s.pen}</div>
+        <div class="stat-lbl">Pênaltis Totais</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">${winPct}</div>
+        <div class="stat-lbl">Jogos Decididos</div>
+      </div>
+    </div>
+
+    <!-- H2H -->
+    <div class="card card-glow-gold" style="margin-bottom:20px">
+      <h3 class="card-title">🥊 Confronto Direto</h3>
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:24px;text-align:center;align-items:center">
+        <div>
+          <div style="font-family:var(--font-d);font-size:52px;color:var(--miguel)">${s.m}</div>
+          <div style="font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-bottom:10px">VITÓRIAS</div>
+          <div style="font-size:12px;color:var(--text-dim)">${gM} gols marcados</div>
+          <div style="font-size:12px;color:var(--text-dim)">${penM} vitória${penM!==1?'s':''} por pênaltis</div>
+        </div>
+        <div>
+          <div style="font-family:var(--font-d);font-size:32px;color:var(--gold)">${s.d}</div>
+          <div style="font-size:10px;letter-spacing:2px;color:var(--text-dim)">EMPATES</div>
+        </div>
+        <div>
+          <div style="font-family:var(--font-d);font-size:52px;color:var(--isaac)">${s.i}</div>
+          <div style="font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-bottom:10px">VITÓRIAS</div>
+          <div style="font-size:12px;color:var(--text-dim)">${gI} gols marcados</div>
+          <div style="font-size:12px;color:var(--text-dim)">${penI} vitória${penI!==1?'s':''} por pênaltis</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Biggest win -->
+    ${bigWin ? `
+    <div class="card" style="margin-bottom:20px">
+      <h3 class="card-title">💥 Maior Placar</h3>
+      ${matchCard(bigWin, false)}
+    </div>` : ''}
+
+    <!-- Per round -->
+    <div class="card" style="margin-bottom:20px">
+      <h3 class="card-title">📅 Por Rodada</h3>
+      ${!ST.rounds.length ? '<div style="color:var(--text-dim)">Nenhuma rodada criada</div>' :
+        ST.rounds.map(r => {
+          const ms = ST.matches.filter(m => m.round === r);
+          const mw = ms.filter(m => m.winner==='miguel').length;
+          const iw = ms.filter(m => m.winner==='isaac').length;
+          const dr = ms.filter(m => m.winner==='draw').length;
+          return `<div class="h2h-row">
+            <span style="font-family:var(--font-d);letter-spacing:1px;color:var(--gold)">${escHtml(r)}</span>
+            <span style="color:var(--text-dim);font-size:13px">${ms.length} jogo${ms.length!==1?'s':''}</span>
+            <div style="display:flex;gap:6px">
+              ${mw?`<span class="badge badge-m">M:${mw}</span>`:''}
+              ${dr?`<span class="badge badge-d">E:${dr}</span>`:''}
+              ${iw?`<span class="badge badge-i">I:${iw}</span>`:''}
+            </div>
+          </div>`;
+        }).join('')
+      }
+    </div>
+
+    <!-- Top teams -->
+    ${topTeams.length ? `
+    <div class="card" style="margin-bottom:20px">
+      <h3 class="card-title">⭐ Times Mais Utilizados</h3>
+      ${topTeams.map(([name, cnt], idx) => `
+        <div class="h2h-row">
+          <span style="color:var(--gold);font-family:var(--font-d);font-size:18px">#${idx+1}</span>
+          <span style="font-weight:600">${escHtml(name)}</span>
+          <span style="color:var(--text-dim);font-size:13px">${cnt} jogo${cnt!==1?'s':''}</span>
+        </div>`).join('')}
+    </div>` : ''}
+  `;
+}
+
+/* ============================================================
+   CLEAR DATA
+============================================================ */
+function clearAll() {
+  ST = { rounds:[], matches:[], bank:[], fairCount:0, _lastDraw:null, _lastSim:null };
+  save(); updateHeader(); render('dashboard');
+  toast('🗑️ Todos os dados apagados');
+}
+
+function clearMatches() {
+  ST.matches = []; ST._lastSim = null;
+  save(); updateHeader(); render('estatisticas');
+  toast('🗑️ Partidas apagadas');
+}
+
+/* ============================================================
+   HELPERS
+============================================================ */
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function setTxt(id, v) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = v;
+}
+
+function todayStr() {
+  return new Date().toLocaleDateString('pt-BR');
+}
+
+/* ============================================================
+   MASTER RENDER
+============================================================ */
+function render(sec) {
+  updateHeader();
+  updateRoundSelects();
+  switch(sec) {
+    case 'dashboard':    renderDashboard(); break;
+    case 'rodadas':      renderRounds();    break;
+    case 'historico':    renderHistory();   break;
+    case 'sorteio':      renderBank();      break;
+    case 'estatisticas': renderStats();     break;
+  }
+}
+
+function renderCurrentSection() {
+  const active = document.querySelector('.section.active');
+  const sec = active ? active.id.replace('sec-', '') : 'dashboard';
+  render(sec);
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+load();
+
+// Seed default rounds if first time
+if (!ST.rounds.length) {
+  ['Rodada 1','Rodada 2','Oitavas','Quartas','Semifinal','Final 🏆'].forEach(r => ST.rounds.push(r));
+  save();
+}
+
+updateHeader();
+updateRoundSelects();
+renderDashboard();
+initFirebase();
+
+// Keyboard shortcut: ESC closes confirm
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeConfirm();
+});
+</script>
+</body>
+</html>
