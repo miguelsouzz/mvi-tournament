@@ -93,13 +93,51 @@
       flex-shrink: 0;
     }
 
+    .scoreboard.expanded {
+      min-height: 72px;
+      background: linear-gradient(135deg, rgba(0,180,255,.08), rgba(255,45,85,.08)), var(--card);
+      box-shadow:
+        0 14px 34px rgba(0,0,0,.25),
+        inset 0 1px 0 rgba(255,255,255,.08);
+    }
+
     .sb-player {
       display: flex; align-items: center; gap: 12px;
-      padding: 8px 22px;
+      padding: 8px 20px;
       font-family: var(--font-d); font-size: 17px; letter-spacing: 1px;
     }
     .sb-player.miguel { color: var(--miguel); border-right: 1px solid var(--border); }
     .sb-player.isaac  { color: var(--isaac);  border-left:  1px solid var(--border); }
+
+    .player-avatar,
+    .player-avatar-fallback {
+      width: 56px;
+      height: 56px;
+      flex: 0 0 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.14);
+    }
+
+    .player-avatar-fallback {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-d);
+      font-size: 20px;
+      letter-spacing: 1px;
+    }
+
+    .player-avatar.miguel-avatar,
+    .player-avatar-fallback.miguel-avatar {
+      box-shadow: 0 0 22px rgba(0,180,255,.34);
+    }
+
+    .player-avatar.isaac-avatar,
+    .player-avatar-fallback.isaac-avatar {
+      box-shadow: 0 0 22px rgba(255,45,85,.34);
+    }
 
     .sb-num {
       font-size: 30px; line-height: 1;
@@ -458,6 +496,58 @@
     .mc-team-owner.miguel { color: var(--miguel); }
     .mc-team-owner.isaac  { color: var(--isaac); }
     .mc-team-owner.none   { color: var(--text-dim); }
+
+    .match-card-compact {
+      padding: 14px;
+      margin-bottom: 10px;
+      border-radius: 14px;
+    }
+    .match-card-compact .mc-top {
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+    .match-card-compact .league-pill {
+      padding: 3px 8px;
+      gap: 6px;
+      font-size: 9px;
+      letter-spacing: 1px;
+    }
+    .match-card-compact .league-pill-logo {
+      width: 14px;
+      height: 14px;
+      flex-basis: 14px;
+    }
+    .match-card-compact .mc-date { font-size: 10px; }
+    .match-card-compact .mc-body {
+      gap: 12px;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    }
+    .match-card-compact .mc-team-name { font-size: 17px; }
+    .match-card-compact .mc-team-title { gap: 6px; }
+    .match-card-compact .mc-team-logo {
+      width: 18px;
+      height: 18px;
+      flex-basis: 18px;
+    }
+    .match-card-compact .mc-team-owner {
+      font-size: 9px;
+      letter-spacing: 1.5px;
+    }
+    .match-card-compact .mc-score {
+      font-size: 30px;
+      letter-spacing: 3px;
+    }
+    .match-card-compact .mc-pen { font-size: 11px; }
+    .match-card-compact .mc-verdict {
+      font-size: 9px;
+      letter-spacing: 1.8px;
+      margin-top: 6px;
+    }
+    .match-card-compact .mc-obs {
+      margin-top: 10px;
+      padding-top: 10px;
+      font-size: 12px;
+    }
 
     .leagues-showcase {
       position: relative;
@@ -1074,6 +1164,118 @@
     }
 
     /* ============================================================
+       DASHBOARD LAYOUT
+    ============================================================ */
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(280px, .8fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .dashboard-main,
+    .dashboard-side {
+      min-width: 0;
+    }
+
+    .dashboard-side {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .dashboard-layout .card {
+      margin-bottom: 0;
+    }
+
+    .dashboard-recent-card,
+    .dashboard-info-card {
+      padding: 20px;
+    }
+
+    .dashboard-recent-card .card-title,
+    .dashboard-info-card .card-title {
+      font-size: 19px;
+      margin-bottom: 16px;
+    }
+
+    .dashboard-recent-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .dashboard-recent-list .match-card {
+      margin-bottom: 0;
+    }
+
+    .dashboard-recent-list .empty-state {
+      padding: 34px 16px;
+    }
+
+    .dashboard-stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 0;
+    }
+
+    .dashboard-stats .stat-box {
+      padding: 14px 10px;
+      border-radius: 14px;
+    }
+
+    .dashboard-stats .stat-val {
+      font-size: 34px;
+      margin-bottom: 5px;
+    }
+
+    .dashboard-stats .stat-lbl {
+      font-size: 9px;
+      letter-spacing: 1.4px;
+    }
+
+    .dashboard-insight-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .dashboard-insight-row:last-child { border-bottom: none; }
+    .dashboard-insight-row span { color: var(--text-dim); }
+    .dashboard-insight-row strong {
+      max-width: 190px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-align: right;
+      font-weight: 700;
+    }
+
+    .dashboard-info-card .leader-box {
+      padding: 12px 4px;
+    }
+    .dashboard-info-card .leader-icon {
+      font-size: 40px;
+      margin-bottom: 8px;
+    }
+    .dashboard-info-card .leader-avatar,
+    .dashboard-info-card .leader-avatar-fallback {
+      width: 88px;
+      height: 88px;
+      margin-bottom: 12px;
+    }
+    .dashboard-info-card .leader-name {
+      font-size: 27px;
+      letter-spacing: 2px;
+    }
+    .dashboard-info-card .leader-sub {
+      font-size: 12px;
+    }
+
+    /* ============================================================
        ROUNDS GRID
     ============================================================ */
     .rounds-grid {
@@ -1134,6 +1336,32 @@
     ============================================================ */
     .leader-box { text-align: center; padding: 40px 20px; }
     .leader-icon { font-size: 72px; display: block; margin-bottom: 16px; }
+    .leader-avatar,
+    .leader-avatar-fallback {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.16);
+    }
+    .leader-avatar-fallback {
+      display: none;
+      font-family: var(--font-d);
+      font-size: 34px;
+    }
+    .leader-avatar.miguel-avatar,
+    .leader-avatar-fallback.miguel-avatar {
+      box-shadow: 0 0 34px rgba(0,180,255,.45);
+    }
+    .leader-avatar.isaac-avatar,
+    .leader-avatar-fallback.isaac-avatar {
+      box-shadow: 0 0 34px rgba(255,45,85,.45);
+    }
     .leader-name { font-family: var(--font-d); font-size: 42px; letter-spacing: 4px; }
     .leader-sub  { color: var(--text-dim); margin-top: 8px; font-size: 14px; }
 
@@ -1204,12 +1432,60 @@
     /* ============================================================
        RESPONSIVE
     ============================================================ */
+    @media (max-width: 768px) {
+      .dashboard-layout { grid-template-columns: 1fr; }
+      .dashboard-side { order: -1; }
+      .dashboard-recent-card,
+      .dashboard-info-card { padding: 16px; }
+      .dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .dashboard-insight-row strong { max-width: 150px; }
+      .match-card-compact .mc-body { grid-template-columns: 1fr; }
+      .match-card-compact .mc-team.right {
+        text-align: left;
+        align-items: flex-start;
+      }
+      .match-card-compact .mc-score { font-size: 30px; }
+    }
+
     @media (max-width: 700px) {
       .header-inner { flex-direction: column; height: auto; padding: 14px 16px; gap: 10px; }
+      .scoreboard.expanded {
+        width: 100%;
+        max-width: 100%;
+        min-height: 58px;
+      }
+      .sb-player {
+        flex: 1 1 0;
+        min-width: 0;
+        justify-content: center;
+        gap: 7px;
+        padding: 6px 8px;
+        font-size: 14px;
+        letter-spacing: .7px;
+      }
+      .player-avatar,
+      .player-avatar-fallback {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+        font-size: 15px;
+      }
+      .sb-num { font-size: 25px; }
+      .sb-middle {
+        min-width: 56px;
+        padding: 5px 8px;
+      }
       nav { top: 120px; }
       .mc-body { grid-template-columns: 1fr; gap: 12px; }
       .mc-team.right { text-align: left; align-items: flex-start; }
       .mc-score { font-size: 32px; }
+      .leader-avatar,
+      .leader-avatar-fallback,
+      .dashboard-info-card .leader-avatar,
+      .dashboard-info-card .leader-avatar-fallback {
+        width: 72px;
+        height: 72px;
+      }
       .page-title { font-size: 30px; }
       main { padding: 24px 16px; }
     }
@@ -1281,8 +1557,10 @@
 <header>
   <div class="header-inner">
     <div class="logo">⚽ MvI Tournament</div>
-    <div class="scoreboard">
+    <div class="scoreboard expanded">
       <div class="sb-player miguel">
+        <img class="player-avatar miguel-avatar" src="assets/players/miguel-icon.png" alt="Miguel" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <span class="player-avatar-fallback miguel-avatar">M</span>
         <span>MIGUEL</span>
         <span class="sb-num" id="hdr-m">0</span>
       </div>
@@ -1293,6 +1571,8 @@
       <div class="sb-player isaac">
         <span class="sb-num" id="hdr-i">0</span>
         <span>ISAAC</span>
+        <img class="player-avatar isaac-avatar" src="assets/players/isaac-icon.png" alt="Isaac" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <span class="player-avatar-fallback isaac-avatar">I</span>
       </div>
     </div>
   </div>
@@ -1339,43 +1619,54 @@
     </div>
   </div>
 
-  <div class="stats-grid">
-    <div class="stat-box" style="border-top:2px solid var(--miguel)">
-      <div class="stat-val" style="color:var(--miguel)" id="d-mw">0</div>
-      <div class="stat-lbl">Vitórias Miguel</div>
+  <div class="dashboard-layout">
+    <div class="dashboard-main">
+      <div class="card dashboard-recent-card">
+        <h3 class="card-title">⚡ Últimas Partidas</h3>
+        <div id="d-recent" class="dashboard-recent-list"></div>
+      </div>
     </div>
-    <div class="stat-box" style="border-top:2px solid var(--gold)">
-      <div class="stat-val" style="color:var(--gold)" id="d-dr">0</div>
-      <div class="stat-lbl">Empates</div>
-    </div>
-    <div class="stat-box" style="border-top:2px solid var(--isaac)">
-      <div class="stat-val" style="color:var(--isaac)" id="d-iw">0</div>
-      <div class="stat-lbl">Vitórias Isaac</div>
-    </div>
-    <div class="stat-box" style="border-top:2px solid var(--purple)">
-      <div class="stat-val" style="color:var(--purple)" id="d-pen">0</div>
-      <div class="stat-lbl">Decisões Pênaltis</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-val" id="d-total">0</div>
-      <div class="stat-lbl">Total de Partidas</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-val" id="d-rounds">0</div>
-      <div class="stat-lbl">Rodadas</div>
-    </div>
-  </div>
 
-  <div class="card">
-    <h3 class="card-title">⚡ Últimas Partidas</h3>
-    <div id="d-recent"></div>
-  </div>
+    <aside class="dashboard-side">
+      <div class="stats-grid dashboard-stats">
+        <div class="stat-box" style="border-top:2px solid var(--miguel)">
+          <div class="stat-val" style="color:var(--miguel)" id="d-mw">0</div>
+          <div class="stat-lbl">Vitórias Miguel</div>
+        </div>
+        <div class="stat-box" style="border-top:2px solid var(--gold)">
+          <div class="stat-val" style="color:var(--gold)" id="d-dr">0</div>
+          <div class="stat-lbl">Empates</div>
+        </div>
+        <div class="stat-box" style="border-top:2px solid var(--isaac)">
+          <div class="stat-val" style="color:var(--isaac)" id="d-iw">0</div>
+          <div class="stat-lbl">Vitórias Isaac</div>
+        </div>
+        <div class="stat-box" style="border-top:2px solid var(--purple)">
+          <div class="stat-val" style="color:var(--purple)" id="d-pen">0</div>
+          <div class="stat-lbl">Pênaltis</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="d-total">0</div>
+          <div class="stat-lbl">Partidas</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="d-rounds">0</div>
+          <div class="stat-lbl">Rodadas</div>
+        </div>
+      </div>
 
-  <div class="card" id="d-leader"></div>
+      <div class="card dashboard-info-card">
+        <h3 class="card-title">✨ Destaques</h3>
+        <div id="d-insights"></div>
+      </div>
 
-  <div class="card">
-    <h3 class="card-title">&#127967;&#65039; Destaques por Liga</h3>
-    <div id="d-leagues"></div>
+      <div class="card dashboard-info-card" id="d-leader"></div>
+
+      <div class="card dashboard-info-card">
+        <h3 class="card-title">&#127967;&#65039; Destaques por Liga</h3>
+        <div id="d-leagues"></div>
+      </div>
+    </aside>
   </div>
 </section>
 
@@ -1627,6 +1918,10 @@ let ST = {
 };
 
 const DEFAULT_TEAM_LOGO = 'logos/default.svg';
+const PLAYER_AVATARS = {
+  miguel: 'assets/players/miguel-icon.png',
+  isaac: 'assets/players/isaac-icon.png'
+};
 const teams = [
   { id: 'real_madrid', name: 'Real Madrid', logo: 'logos/real-madrid.svg' },
   { id: 'barcelona', name: 'Barcelona', logo: 'logos/barcelona.svg' },
@@ -2223,7 +2518,7 @@ function deleteMatch(id) {
 const OWNER_NAME  = { miguel:'Miguel', isaac:'Isaac', none:'—' };
 const OWNER_CLASS = { miguel:'miguel',  isaac:'isaac', none:'none' };
 
-function matchCard(mx, canDelete=true) {
+function matchCard(mx, canDelete=true, compact=false) {
   const teamAData = mx.teamAData || resolveTeamData(mx.teamA);
   const teamBData = mx.teamBData || resolveTeamData(mx.teamB);
   const matchLeague = leagueForMatch(mx);
@@ -2254,7 +2549,7 @@ function matchCard(mx, canDelete=true) {
   const penBadge = mx.penalties ? ' <span class="badge badge-p">Pênaltis</span>' : '';
 
   return `
-  <div class="match-card ${borderClass}">
+  <div class="match-card ${compact ? 'match-card-compact ' : ''}${borderClass}">
     ${delBtn}
     <div class="mc-top">
       <div class="mc-tags">
@@ -2289,6 +2584,10 @@ function matchCard(mx, canDelete=true) {
     </div>
     ${obsLine}
   </div>`;
+}
+
+function compactMatchCard(mx) {
+  return matchCard(mx, false, true);
 }
 
 /* ============================================================
@@ -2488,28 +2787,50 @@ function renderDashboard() {
   const recent = [...ST.matches].reverse().slice(0, 4);
   const rEl = document.getElementById('d-recent');
   rEl.innerHTML = recent.length
-    ? recent.map(m => matchCard(m, false)).join('')
+    ? recent.map(m => compactMatchCard(m)).join('')
     : '<div class="empty-state"><span class="empty-icon">⚽</span><p>Nenhuma partida registrada ainda</p><p style="margin-top:8px;font-size:13px">Vá em <strong>Registrar</strong> para começar!</p></div>';
+
+  ensureDefaultLeagues();
+  const leagueRows = ST.leagues.map(league => ({ league, stats: leagueStats(league.id) }));
+  const byTotal = [...leagueRows].sort((a,b) => b.stats.total - a.stats.total)[0];
+  const byMiguel = [...leagueRows].sort((a,b) => b.stats.miguel - a.stats.miguel)[0];
+  const byIsaac = [...leagueRows].sort((a,b) => b.stats.isaac - a.stats.isaac)[0];
+  const latest = ST.matches.length ? ST.matches[ST.matches.length - 1] : null;
+  const bigScore = ST.matches.length
+    ? [...ST.matches].sort((a,b) => ((+b.goalsA || 0) + (+b.goalsB || 0)) - ((+a.goalsA || 0) + (+a.goalsB || 0)))[0]
+    : null;
+
+  const winnerLabel = !latest ? 'Sem dados'
+    : latest.winner === 'draw' ? 'Empate'
+    : latest.winner === 'neutral' ? 'Sem pontuação'
+    : OWNER_NAME[latest.winner] || 'Sem dados';
+
+  const bigScoreLabel = bigScore
+    ? `${bigScore.teamA} ${bigScore.goalsA}×${bigScore.goalsB} ${bigScore.teamB}`
+    : 'Sem dados';
+
+  const iEl = document.getElementById('d-insights');
+  if (iEl) {
+    iEl.innerHTML = `
+      <div class="dashboard-insight-row"><span>Liga com mais partidas</span><strong>${byTotal && byTotal.stats.total ? escHtml(byTotal.league.name) + ' (' + byTotal.stats.total + ')' : 'Sem dados'}</strong></div>
+      <div class="dashboard-insight-row"><span>Último vencedor</span><strong>${escHtml(winnerLabel)}</strong></div>
+      <div class="dashboard-insight-row"><span>Maior placar</span><strong>${escHtml(bigScoreLabel)}</strong></div>`;
+  }
 
   // Leader
   const lEl = document.getElementById('d-leader');
   if (!s.total) {
     lEl.innerHTML = `<div class="leader-box"><span class="leader-icon">🏆</span><div class="leader-name" style="color:var(--gold)">Comece a Jogar!</div><div class="leader-sub">Registre partidas para ver o líder do torneio</div></div>`;
   } else if (s.m > s.i) {
-    lEl.innerHTML = `<div class="leader-box"><span class="leader-icon" style="filter:drop-shadow(0 0 24px var(--miguel))">🔵</span><div class="leader-name" style="color:var(--miguel)">MIGUEL LIDERA</div><div class="leader-sub">${s.m} vitória${s.m!==1?'s':''} × ${s.i} do Isaac (${s.d} empate${s.d!==1?'s':''})</div></div>`;
+    lEl.innerHTML = `<div class="leader-box"><img class="leader-avatar miguel-avatar" src="${PLAYER_AVATARS.miguel}" alt="Miguel" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';"><span class="leader-avatar-fallback miguel-avatar">M</span><div class="leader-name" style="color:var(--miguel)">MIGUEL LIDERA</div><div class="leader-sub">${s.m} vitória${s.m!==1?'s':''} × ${s.i} do Isaac (${s.d} empate${s.d!==1?'s':''})</div></div>`;
   } else if (s.i > s.m) {
-    lEl.innerHTML = `<div class="leader-box"><span class="leader-icon" style="filter:drop-shadow(0 0 24px var(--isaac))">🔴</span><div class="leader-name" style="color:var(--isaac)">ISAAC LIDERA</div><div class="leader-sub">${s.i} vitória${s.i!==1?'s':''} × ${s.m} do Miguel (${s.d} empate${s.d!==1?'s':''})</div></div>`;
+    lEl.innerHTML = `<div class="leader-box"><img class="leader-avatar isaac-avatar" src="${PLAYER_AVATARS.isaac}" alt="Isaac" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';"><span class="leader-avatar-fallback isaac-avatar">I</span><div class="leader-name" style="color:var(--isaac)">ISAAC LIDERA</div><div class="leader-sub">${s.i} vitória${s.i!==1?'s':''} × ${s.m} do Miguel (${s.d} empate${s.d!==1?'s':''})</div></div>`;
   } else {
     lEl.innerHTML = `<div class="leader-box"><span class="leader-icon">🤝</span><div class="leader-name" style="color:var(--gold)">EMPATE GERAL</div><div class="leader-sub">Cada um com ${s.m} vitória${s.m!==1?'s':''} — acirrado!</div></div>`;
   }
 
   const dLeagues = document.getElementById('d-leagues');
   if (dLeagues) {
-    ensureDefaultLeagues();
-    const rows = ST.leagues.map(league => ({ league, stats: leagueStats(league.id) }));
-    const byTotal = [...rows].sort((a,b) => b.stats.total - a.stats.total)[0];
-    const byMiguel = [...rows].sort((a,b) => b.stats.miguel - a.stats.miguel)[0];
-    const byIsaac = [...rows].sort((a,b) => b.stats.isaac - a.stats.isaac)[0];
     const item = (title, row, key) => row && row.stats[key] > 0
       ? `<div class="h2h-row"><span>${title}</span><strong>${escHtml(row.league.name)} (${row.stats[key]})</strong></div>`
       : `<div class="h2h-row"><span>${title}</span><span style="color:var(--text-dim)">Sem dados</span></div>`;
