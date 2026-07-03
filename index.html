@@ -101,6 +101,28 @@
         inset 0 1px 0 rgba(255,255,255,.08);
     }
 
+    .scoreboard.sport-football {
+      border-color: rgba(34,197,94,.26);
+    }
+    .scoreboard.sport-basketball {
+      border-color: rgba(249,115,22,.34);
+      box-shadow:
+        0 14px 34px rgba(0,0,0,.25),
+        0 0 24px rgba(249,115,22,.10),
+        inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    .scoreboard.scoreboard-fade-in .sb-player,
+    .scoreboard.scoreboard-fade-in .sb-middle {
+      animation: scoreboardModeIn .44s cubic-bezier(.22,1,.36,1) both;
+    }
+    .scoreboard.scoreboard-fade-in .sb-middle { animation-delay: .04s; }
+    .scoreboard.scoreboard-fade-in .sb-player.isaac { animation-delay: .08s; }
+
+    @keyframes scoreboardModeIn {
+      from { opacity: 0; transform: translateY(8px) scale(.97); filter: blur(5px); }
+      to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
     .sb-player {
       display: flex; align-items: center; gap: 12px;
       padding: 8px 20px;
@@ -146,10 +168,18 @@
 
     .sb-middle {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 6px 16px; min-width: 70px;
+      padding: 5px 14px; min-width: 96px;
     }
     .sb-middle .num { font-family: var(--font-d); font-size: 22px; color: var(--gold); }
-    .sb-middle .lbl { font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
+    .scoreboard.sport-basketball .sb-middle .num { color: #fb923c; }
+    .sb-middle .lbl { font-size: 8px; letter-spacing: 1.3px; color: var(--text-dim); text-transform: uppercase; white-space: nowrap; }
+    .sb-sport-mode {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,.78);
+      white-space: nowrap;
+    }
 
     /* ============================================================
        NAVIGATION
@@ -245,6 +275,47 @@
 
     .form-group { display: flex; flex-direction: column; gap: 7px; }
 
+    .sport-filter-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px 8px 14px;
+      margin: -16px 0 22px;
+      background: rgba(255,255,255,.045);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .sport-filter-bar label {
+      color: var(--text-dim);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+    .sport-filter-bar select {
+      width: auto;
+      min-width: 150px;
+      padding: 8px 32px 8px 10px;
+    }
+
+    .sport-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 24px;
+      padding: 0 7px;
+      border-radius: 12px;
+      font-size: 12px;
+      background: rgba(34,197,94,.10);
+      border: 1px solid rgba(34,197,94,.22);
+    }
+    .sport-badge.basketball {
+      background: rgba(249,115,22,.12);
+      border-color: rgba(249,115,22,.28);
+      color: #fb923c;
+    }
+
     .autocomplete-wrap { position: relative; }
     .autocomplete-list {
       display: none;
@@ -285,6 +356,14 @@
       object-fit: contain;
       background: transparent;
     }
+    .autocomplete-logo.is-country,
+    .mc-team-logo.is-country {
+      border-radius: 5px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.035);
+      box-shadow: 0 2px 8px rgba(0,0,0,.24);
+    }
+    .autocomplete-logo.is-country { border-radius: 4px; }
     .autocomplete-name {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -399,6 +478,13 @@
     .match-card.is-draw       { border-left-color: var(--gold); }
     .match-card.is-neutral    { border-left-color: var(--text-dim); opacity: .75; }
     .match-card.is-penalties  { border-left-color: var(--purple); }
+    .match-card.sport-basketball {
+      box-shadow: inset 0 1px 0 rgba(249,115,22,.16);
+    }
+    .match-card.sport-basketball .league-pill {
+      border-color: rgba(249,115,22,.26);
+      background: rgba(249,115,22,.08);
+    }
 
     .mc-top {
       display: flex; justify-content: space-between; align-items: center;
@@ -451,6 +537,53 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .league-sport-icon {
+      flex: 0 0 auto;
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .sport-note {
+      margin-top: 6px;
+      color: #fb923c;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    .sport-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .sport-summary-card {
+      padding: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .sport-summary-card.basketball { border-top: 2px solid #f97316; }
+    .sport-summary-card.football { border-top: 2px solid #22c55e; }
+    .sport-summary-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-family: var(--font-d);
+      font-size: 20px;
+      letter-spacing: 1px;
+    }
+    .sport-summary-card .h2h-row {
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .sport-summary-card .h2h-row strong {
+      overflow-wrap: anywhere;
     }
 
     .mc-date { flex: 0 0 auto; font-size: 11px; color: var(--text-dim); }
@@ -685,6 +818,11 @@
     }
     .league-name {
       position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
       font-family: var(--font-d);
       font-size: clamp(25px, 2.2vw, 34px);
       letter-spacing: 1px;
@@ -881,7 +1019,9 @@
       .leagues-showcase *::before,
       .leagues-showcase *::after,
       .league-modal,
-      .league-modal * {
+      .league-modal *,
+      .scoreboard.scoreboard-fade-in .sb-player,
+      .scoreboard.scoreboard-fade-in .sb-middle {
         animation: none !important;
         transition: none !important;
       }
@@ -1439,16 +1579,34 @@
       .dashboard-info-card { padding: 16px; }
       .dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .dashboard-insight-row strong { max-width: 150px; }
-      .match-card-compact .mc-body { grid-template-columns: 1fr; }
+      .match-card-compact .mc-body {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        gap: 8px;
+      }
+      .match-card-compact .mc-team,
       .match-card-compact .mc-team.right {
-        text-align: left;
-        align-items: flex-start;
+        min-width: 0;
+        text-align: center;
+        align-items: center;
+      }
+      .match-card-compact .mc-team-title,
+      .match-card-compact .mc-team.right .mc-team-title {
+        flex-direction: column;
+        justify-content: center;
       }
       .match-card-compact .mc-score { font-size: 30px; }
     }
 
     @media (max-width: 700px) {
       .header-inner { flex-direction: column; height: auto; padding: 14px 16px; gap: 10px; }
+      .sport-filter-bar {
+        width: 100%;
+        margin-top: -12px;
+      }
+      .sport-filter-bar select {
+        flex: 1;
+        min-width: 0;
+      }
       .scoreboard.expanded {
         width: 100%;
         max-width: 100%;
@@ -1472,13 +1630,69 @@
       }
       .sb-num { font-size: 25px; }
       .sb-middle {
-        min-width: 56px;
+        min-width: 64px;
         padding: 5px 8px;
       }
+      .sb-middle .lbl { font-size: 7px; letter-spacing: .5px; }
+      .sb-sport-mode { font-size: 8px; letter-spacing: .4px; }
       nav { top: 120px; }
-      .mc-body { grid-template-columns: 1fr; gap: 12px; }
-      .mc-team.right { text-align: left; align-items: flex-start; }
-      .mc-score { font-size: 32px; }
+      .match-card { padding: 15px 13px; }
+      .mc-top { margin-bottom: 14px; }
+      .mc-body {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        gap: 8px;
+        align-items: center;
+      }
+      .mc-team,
+      .mc-team.right {
+        min-width: 0;
+        text-align: center;
+        align-items: center;
+      }
+      .mc-team-title,
+      .mc-team.right .mc-team-title {
+        width: 100%;
+        flex-direction: column;
+        justify-content: center;
+        gap: 6px;
+      }
+      .mc-team-logo,
+      .match-card-compact .mc-team-logo {
+        width: 30px;
+        height: 30px;
+        flex-basis: 30px;
+      }
+      .mc-team-name,
+      .match-card-compact .mc-team-name {
+        width: 100%;
+        font-size: 16px;
+        line-height: 1.05;
+        text-align: center;
+        overflow-wrap: anywhere;
+      }
+      .mc-team-owner,
+      .match-card-compact .mc-team-owner {
+        margin-top: 3px;
+        font-size: 8px;
+        letter-spacing: 1.2px;
+      }
+      .mc-center { min-width: 72px; }
+      .mc-score,
+      .match-card-compact .mc-score {
+        font-size: 30px;
+        letter-spacing: 1px;
+        white-space: nowrap;
+      }
+      .mc-score span { margin: 0 4px !important; }
+      .sport-basketball .mc-center { min-width: 104px; }
+      .sport-basketball .mc-score { font-size: 26px; }
+      .mc-verdict {
+        font-size: 8px;
+        letter-spacing: .8px;
+        line-height: 1.2;
+      }
+      .mc-pen,
+      .sport-note { font-size: 8px; letter-spacing: .6px; }
       .leader-avatar,
       .leader-avatar-fallback,
       .dashboard-info-card .leader-avatar,
@@ -1488,6 +1702,39 @@
       }
       .page-title { font-size: 30px; }
       main { padding: 24px 16px; }
+    }
+
+    @media (max-width: 380px) {
+      .sb-player {
+        gap: 4px;
+        padding: 5px 4px;
+        font-size: 12px;
+      }
+      .player-avatar,
+      .player-avatar-fallback {
+        width: 32px;
+        height: 32px;
+        flex-basis: 32px;
+      }
+      .sb-num { font-size: 22px; }
+      .sb-middle { min-width: 58px; padding: 4px; }
+      .sb-middle .lbl { font-size: 6px; }
+      .sb-sport-mode { font-size: 7px; }
+      .mc-body,
+      .match-card-compact .mc-body { gap: 4px; }
+      .mc-team-logo,
+      .match-card-compact .mc-team-logo {
+        width: 26px;
+        height: 26px;
+        flex-basis: 26px;
+      }
+      .mc-team-name,
+      .match-card-compact .mc-team-name { font-size: 14px; }
+      .mc-center { min-width: 64px; }
+      .mc-score,
+      .match-card-compact .mc-score { font-size: 27px; }
+      .sport-basketball .mc-center { min-width: 92px; }
+      .sport-basketball .mc-score { font-size: 23px; }
     }
 
     /* ============================================================
@@ -1557,7 +1804,7 @@
 <header>
   <div class="header-inner">
     <div class="logo">⚽ MvI Tournament</div>
-    <div class="scoreboard expanded">
+    <div class="scoreboard expanded sport-football" id="main-scoreboard" data-sport="football" aria-live="polite">
       <div class="sb-player miguel">
         <img class="player-avatar miguel-avatar" src="assets/players/miguel-icon.png" alt="Miguel" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
         <span class="player-avatar-fallback miguel-avatar">M</span>
@@ -1565,8 +1812,9 @@
         <span class="sb-num" id="hdr-m">0</span>
       </div>
       <div class="sb-middle">
+        <div class="sb-sport-mode" id="hdr-sport-mode">⚽ Futebol</div>
         <div class="num" id="hdr-d">0</div>
-        <div class="lbl">Empates</div>
+        <div class="lbl" id="hdr-special-label">Empates</div>
       </div>
       <div class="sb-player isaac">
         <span class="sb-num" id="hdr-i">0</span>
@@ -1601,6 +1849,15 @@
 <section id="sec-dashboard" class="section active">
   <h1 class="page-title">🏆 Dashboard</h1>
   <p class="page-sub">Visão geral do torneio em tempo real</p>
+
+  <div class="sport-filter-bar">
+    <label for="d-sport">Modalidade</label>
+    <select id="d-sport" onchange="handleDashboardSportChange()">
+      <option value="all">Todas</option>
+      <option value="football">⚽ Futebol</option>
+      <option value="basketball">🏀 Basquete</option>
+    </select>
+  </div>
 
   <div class="rivalry-section card-glow-gold">
     <div class="rivalry-header">
@@ -1643,7 +1900,7 @@
         </div>
         <div class="stat-box" style="border-top:2px solid var(--purple)">
           <div class="stat-val" style="color:var(--purple)" id="d-pen">0</div>
-          <div class="stat-lbl">Pênaltis</div>
+          <div class="stat-lbl" id="d-special-lbl">Pênaltis</div>
         </div>
         <div class="stat-box">
           <div class="stat-val" id="d-total">0</div>
@@ -1680,8 +1937,15 @@
 
     <div class="form-grid">
       <div class="form-group">
+        <label>Modalidade</label>
+        <select id="r-sport" onchange="handleRegistrationSportChange()">
+          <option value="football">⚽ Futebol</option>
+          <option value="basketball">🏀 Basquete</option>
+        </select>
+      </div>
+      <div class="form-group">
         <label>Liga/Campeonato</label>
-        <select id="r-league-sel">
+        <select id="r-league-sel" onchange="updateRoundSelects()">
           <option value="">— Selecione —</option>
         </select>
       </div>
@@ -1718,7 +1982,7 @@
         </select>
       </div>
       <div class="form-group">
-        <label>Gols Time A</label>
+        <label id="r-score-label-a">Gols Time A</label>
         <input type="number" id="r-ga" min="0" value="0">
       </div>
     </div>
@@ -1740,14 +2004,19 @@
         </select>
       </div>
       <div class="form-group">
-        <label>Gols Time B</label>
+        <label id="r-score-label-b">Gols Time B</label>
         <input type="number" id="r-gb" min="0" value="0">
       </div>
     </div>
 
-    <div class="toggle-row">
+    <div class="toggle-row" id="football-options">
       <input type="checkbox" id="r-pen-chk" onchange="togglePen()">
       <label for="r-pen-chk">🥅 Decisão por pênaltis (empate no tempo normal)</label>
+    </div>
+
+    <div class="toggle-row" id="basketball-options" style="display:none">
+      <input type="checkbox" id="r-ot-chk">
+      <label for="r-ot-chk">⏱️ Partida decidida na prorrogação</label>
     </div>
 
     <div id="pen-block" style="display:none" class="form-grid">
@@ -1797,6 +2066,20 @@
         <label>Nome da Rodada</label>
         <input type="text" id="nr-name" placeholder="Ex: Rodada 3, Final, Copa Especial...">
       </div>
+      <div class="form-group">
+        <label>Modalidade (opcional)</label>
+        <select id="nr-sport" onchange="handleRoundSportChange()">
+          <option value="">Todas</option>
+          <option value="football">⚽ Futebol</option>
+          <option value="basketball">🏀 Basquete</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Liga/Campeonato (opcional)</label>
+        <select id="nr-league">
+          <option value="">Todas</option>
+        </select>
+      </div>
       <div class="form-group" style="justify-content:flex-end">
         <button class="btn btn-gold" onclick="addRound()" style="align-self:flex-end">+ Criar Rodada</button>
       </div>
@@ -1821,6 +2104,14 @@
   <h1 class="page-title">&#127967;&#65039; Ligas/Campeonatos</h1>
   <p class="page-sub">Organize as partidas por competição</p>
 
+  <div class="sport-filter-bar">
+    <label for="l-sport">Modalidade</label>
+    <select id="l-sport" onchange="handleLeagueSportChange()">
+      <option value="football">⚽ Futebol</option>
+      <option value="basketball">🏀 Basquete</option>
+    </select>
+  </div>
+
   <div id="leagues-grid" class="league-grid"></div>
 </section>
 
@@ -1832,8 +2123,16 @@
   <div class="card" style="margin-bottom:20px">
     <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
       <div class="form-group" style="flex:1;min-width:160px">
+        <label>Modalidade</label>
+        <select id="f-sport" onchange="handleHistorySportChange()">
+          <option value="all">Todas</option>
+          <option value="football">⚽ Futebol</option>
+          <option value="basketball">🏀 Basquete</option>
+        </select>
+      </div>
+      <div class="form-group" style="flex:1;min-width:160px">
         <label>Liga/Campeonato</label>
-        <select id="f-league" onchange="renderHistory()">
+        <select id="f-league" onchange="updateRoundSelects();renderHistory()">
           <option value="">Todas</option>
         </select>
       </div>
@@ -1863,6 +2162,15 @@
 <section id="sec-estatisticas" class="section">
   <h1 class="page-title">📊 Estatísticas</h1>
   <p class="page-sub">Análise completa da rivalidade</p>
+
+  <div class="sport-filter-bar">
+    <label for="stats-sport">Modalidade</label>
+    <select id="stats-sport" onchange="handleStatsSportChange()">
+      <option value="all">Geral</option>
+      <option value="football">⚽ Futebol</option>
+      <option value="basketball">🏀 Basquete</option>
+    </select>
+  </div>
 
   <div id="stats-body"></div>
 
@@ -1907,17 +2215,41 @@ let firebaseIsReady = false;
 let applyingRemoteState = false;
 let firebaseInitialLoadDone = false;
 let currentUpdatedAt = 0;
+let activeScoreboardSport = 'football';
+let scoreboardFadeTimer = null;
 
 /* ============================================================
    STATE
 ============================================================ */
 let ST = {
   rounds:    [],
+  roundMeta: {},
   leagues:   [],
   matches:   []
 };
 
+const SPORTS = {
+  football: {
+    id: 'football',
+    name: 'Futebol',
+    icon: '⚽',
+    scoreLabel: 'Gols',
+    allowsDraw: true,
+    allowsPenalties: true
+  },
+  basketball: {
+    id: 'basketball',
+    name: 'Basquete',
+    icon: '🏀',
+    scoreLabel: 'Pontos',
+    allowsDraw: false,
+    allowsPenalties: false
+  }
+};
+
 const DEFAULT_TEAM_LOGO = 'logos/default.svg';
+const DEFAULT_BASKETBALL_TEAM_LOGO = 'assets/teams/basketball/default.svg';
+const DEFAULT_BASKETBALL_LEAGUE_LOGO = 'assets/leagues/default.svg';
 const PLAYER_AVATARS = {
   miguel: 'assets/players/miguel-icon.png',
   isaac: 'assets/players/isaac-icon.png'
@@ -2012,18 +2344,125 @@ const teams = [
   { id: 'uruguai', name: 'Uruguai', logo: 'logos/uruguai.svg' },
   { id: 'uzbequistao', name: 'Uzbequistao', logo: 'logos/uzbequistao.svg' }
 ];
-const TEAMS = teams;
+const BASKETBALL_TEAMS = [
+  { id: 'atlanta_hawks', name: 'Atlanta Hawks', logo: 'assets/teams/basketball/atlanta-hawks.svg' },
+  { id: 'boston_celtics', name: 'Boston Celtics', logo: 'assets/teams/basketball/boston-celtics.svg' },
+  { id: 'brooklyn_nets', name: 'Brooklyn Nets', logo: 'assets/teams/basketball/brooklyn-nets.svg' },
+  { id: 'charlotte_hornets', name: 'Charlotte Hornets', logo: 'assets/teams/basketball/charlotte-hornets.svg' },
+  { id: 'chicago_bulls', name: 'Chicago Bulls', logo: 'assets/teams/basketball/chicago-bulls.svg' },
+  { id: 'cleveland_cavaliers', name: 'Cleveland Cavaliers', logo: 'assets/teams/basketball/cleveland-cavaliers.svg' },
+  { id: 'dallas_mavericks', name: 'Dallas Mavericks', logo: 'assets/teams/basketball/dallas-mavericks.svg' },
+  { id: 'denver_nuggets', name: 'Denver Nuggets', logo: 'assets/teams/basketball/denver-nuggets.svg' },
+  { id: 'detroit_pistons', name: 'Detroit Pistons', logo: 'assets/teams/basketball/detroit-pistons.svg' },
+  { id: 'golden_state_warriors', name: 'Golden State Warriors', logo: 'assets/teams/basketball/golden-state-warriors.svg' },
+  { id: 'houston_rockets', name: 'Houston Rockets', logo: 'assets/teams/basketball/houston-rockets.svg' },
+  { id: 'indiana_pacers', name: 'Indiana Pacers', logo: 'assets/teams/basketball/indiana-pacers.svg' },
+  { id: 'los_angeles_clippers', name: 'Los Angeles Clippers', logo: 'assets/teams/basketball/los-angeles-clippers.svg' },
+  { id: 'los_angeles_lakers', name: 'Los Angeles Lakers', logo: 'assets/teams/basketball/los-angeles-lakers.svg' },
+  { id: 'memphis_grizzlies', name: 'Memphis Grizzlies', logo: 'assets/teams/basketball/memphis-grizzlies.svg' },
+  { id: 'miami_heat', name: 'Miami Heat', logo: 'assets/teams/basketball/miami-heat.svg' },
+  { id: 'milwaukee_bucks', name: 'Milwaukee Bucks', logo: 'assets/teams/basketball/milwaukee-bucks.svg' },
+  { id: 'minnesota_timberwolves', name: 'Minnesota Timberwolves', logo: 'assets/teams/basketball/minnesota-timberwolves.svg' },
+  { id: 'new_orleans_pelicans', name: 'New Orleans Pelicans', logo: 'assets/teams/basketball/new-orleans-pelicans.svg' },
+  { id: 'new_york_knicks', name: 'New York Knicks', logo: 'assets/teams/basketball/new-york-knicks.svg' },
+  { id: 'oklahoma_city_thunder', name: 'Oklahoma City Thunder', logo: 'assets/teams/basketball/oklahoma-city-thunder.svg' },
+  { id: 'orlando_magic', name: 'Orlando Magic', logo: 'assets/teams/basketball/orlando-magic.svg' },
+  { id: 'philadelphia_76ers', name: 'Philadelphia 76ers', logo: 'assets/teams/basketball/philadelphia-76ers.svg' },
+  { id: 'phoenix_suns', name: 'Phoenix Suns', logo: 'assets/teams/basketball/phoenix-suns.svg' },
+  { id: 'portland_trail_blazers', name: 'Portland Trail Blazers', logo: 'assets/teams/basketball/portland-trail-blazers.svg' },
+  { id: 'sacramento_kings', name: 'Sacramento Kings', logo: 'assets/teams/basketball/sacramento-kings.svg' },
+  { id: 'san_antonio_spurs', name: 'San Antonio Spurs', logo: 'assets/teams/basketball/san-antonio-spurs.svg' },
+  { id: 'toronto_raptors', name: 'Toronto Raptors', logo: 'assets/teams/basketball/toronto-raptors.svg' },
+  { id: 'utah_jazz', name: 'Utah Jazz', logo: 'assets/teams/basketball/utah-jazz.svg' },
+  { id: 'washington_wizards', name: 'Washington Wizards', logo: 'assets/teams/basketball/washington-wizards.svg' }
+].map(team => ({ ...team, sport: 'basketball' }));
+
+const NATIONAL_TEAM_IDS = new Set([
+  'africa_do_sul', 'alemanha', 'argelia', 'argentina', 'arabia_saudita',
+  'australia', 'austria', 'belgica', 'bosnia_e_herzegovina', 'brasil',
+  'cabo_verde', 'canada', 'catar', 'colombia', 'coreia_do_sul',
+  'costa_do_marfim', 'croacia', 'curacao', 'egito', 'equador', 'escocia',
+  'espanha', 'eua', 'franca', 'gana', 'haiti', 'holanda', 'inglaterra',
+  'ira', 'iraque', 'italia', 'jamaica', 'japao', 'jordania', 'marrocos',
+  'mexico', 'noruega', 'nova_zelandia', 'panama', 'paraguai', 'portugal',
+  'republica_tcheca', 'senegal', 'suecia', 'suica', 'tunisia', 'turquia',
+  'uruguai', 'uzbequistao'
+]);
+
+function isCountryTeamData(team) {
+  return !!team && NATIONAL_TEAM_IDS.has(team.id);
+}
+
+const TEAMS = [
+  ...teams.map(team => ({ ...team, sport: team.sport || 'football' })),
+  ...BASKETBALL_TEAMS
+];
 
 const DEFAULT_LEAGUE_LOGO = 'assets/competitions/default.svg';
 const DEFAULT_LEAGUES = [
-  { id: 'amistosos', slug: 'amistosos', name: 'Amistosos', subtitle: 'Partidas livres', logo: 'assets/competitions/amistosos.svg', description: 'Partidas livres' },
-  { id: 'copa_do_mundo_2026', slug: 'fifa-world-cup-2026', name: 'Copa do Mundo 2026', subtitle: 'Competição internacional', logo: 'assets/competitions/fifa-world-cup-2026.svg', description: 'Competição internacional' },
-  { id: 'brasileirao', slug: 'brasileirao', name: 'Brasileirão', subtitle: 'Campeonato Brasileiro', logo: 'assets/competitions/brasileirao.svg', description: 'Campeonato Brasileiro' },
-  { id: 'libertadores', slug: 'libertadores', name: 'Libertadores', subtitle: 'CONMEBOL Libertadores', logo: 'assets/competitions/libertadores.svg', description: 'CONMEBOL Libertadores' },
-  { id: 'copa_do_brasil', slug: 'copa-do-brasil', name: 'Copa do Brasil', subtitle: 'Mata-mata nacional', logo: 'assets/competitions/copa-do-brasil.svg', description: 'Mata-mata nacional' },
-  { id: 'uefa_champions_league', slug: 'uefa-champions-league', name: 'UEFA Champions League', subtitle: 'Competição europeia', logo: 'assets/competitions/uefa-champions-league.svg', description: 'Competição europeia' },
-  { id: 'mundial_de_clubes', slug: 'mundial-de-clubes', name: 'Mundial de Clubes', subtitle: 'Competição mundial de clubes', logo: 'assets/competitions/mundial-de-clubes.svg', description: 'Competição mundial de clubes' }
+  { id: 'amistosos', slug: 'amistosos', name: 'Amistosos', sport: 'football', subtitle: 'Partidas livres', logo: 'assets/competitions/amistosos.svg', description: 'Partidas livres' },
+  { id: 'copa_do_mundo_2026', slug: 'fifa-world-cup-2026', name: 'Copa do Mundo 2026', sport: 'football', subtitle: 'Competição internacional', logo: 'assets/competitions/fifa-world-cup-2026.svg', description: 'Competição internacional' },
+  { id: 'brasileirao', slug: 'brasileirao', name: 'Brasileirão', sport: 'football', subtitle: 'Campeonato Brasileiro', logo: 'assets/competitions/brasileirao.svg', description: 'Campeonato Brasileiro' },
+  { id: 'libertadores', slug: 'libertadores', name: 'Libertadores', sport: 'football', subtitle: 'CONMEBOL Libertadores', logo: 'assets/competitions/libertadores.svg', description: 'CONMEBOL Libertadores' },
+  { id: 'copa_do_brasil', slug: 'copa-do-brasil', name: 'Copa do Brasil', sport: 'football', subtitle: 'Mata-mata nacional', logo: 'assets/competitions/copa-do-brasil.svg', description: 'Mata-mata nacional' },
+  { id: 'uefa_champions_league', slug: 'uefa-champions-league', name: 'UEFA Champions League', sport: 'football', subtitle: 'Competição europeia', logo: 'assets/competitions/uefa-champions-league.svg', description: 'Competição europeia' },
+  { id: 'mundial_de_clubes', slug: 'mundial-de-clubes', name: 'Mundial de Clubes', sport: 'football', subtitle: 'Competição mundial de clubes', logo: 'assets/competitions/mundial-de-clubes.svg', description: 'Competição mundial de clubes' },
+  { id: 'nba_2k', slug: 'nba-2k', name: 'NBA 2K', sport: 'basketball', subtitle: 'Partidas no NBA 2K', logo: 'assets/leagues/nba-2k.svg', description: 'Partidas no NBA 2K' },
+  { id: 'nba_finals', slug: 'nba-finals', name: 'NBA Finals', sport: 'basketball', subtitle: 'Finais da NBA', logo: 'assets/leagues/nba-finals.svg', description: 'Finais da NBA' }
 ];
+
+const ALLOWED_BASKETBALL_LEAGUE_IDS = new Set(['nba_2k', 'nba_finals']);
+const REMOVED_BASKETBALL_LEAGUE_IDS = new Set(['nba_regular_season', 'nba_playoffs', 'amistosos_nba_2k']);
+
+function getMatchSport(match) {
+  return match && match.sport === 'basketball' ? 'basketball' : 'football';
+}
+
+function getSportConfig(sportId) {
+  return SPORTS[sportId] || SPORTS.football;
+}
+
+function getMatchScoreA(match) {
+  return Number(match && (match.scoreA ?? match.goalsA ?? 0)) || 0;
+}
+
+function getMatchScoreB(match) {
+  return Number(match && (match.scoreB ?? match.goalsB ?? 0)) || 0;
+}
+
+function sportForLeague(league) {
+  return league && league.sport === 'basketball' ? 'basketball' : 'football';
+}
+
+function teamsForSport(sportId) {
+  const normalizedSport = getSportConfig(sportId).id;
+  return TEAMS.filter(team => (team.sport || 'football') === normalizedSport);
+}
+
+function matchesForSport(matches, sportId) {
+  const source = Array.isArray(matches) ? matches : [];
+  return !sportId || sportId === 'all'
+    ? source
+    : source.filter(match => getMatchSport(match) === sportId);
+}
+
+function teamLogoFallback(sportId) {
+  return sportId === 'basketball' ? DEFAULT_BASKETBALL_TEAM_LOGO : DEFAULT_TEAM_LOGO;
+}
+
+function leagueLogoFallback(leagueOrSport) {
+  const sportId = typeof leagueOrSport === 'string' ? leagueOrSport : sportForLeague(leagueOrSport);
+  return sportId === 'basketball' ? DEFAULT_BASKETBALL_LEAGUE_LOGO : DEFAULT_LEAGUE_LOGO;
+}
+
+function defaultLeagueIdForSport(sportId) {
+  return sportId === 'basketball' ? 'nba_2k' : 'amistosos';
+}
+
+function effectiveLeagueIdForMatch(match) {
+  const leagueId = match.leagueId || defaultLeagueIdForSport(getMatchSport(match));
+  return REMOVED_BASKETBALL_LEAGUE_IDS.has(leagueId) ? 'nba_2k' : leagueId;
+}
 
 /* ============================================================
    PERSIST
@@ -2037,6 +2476,7 @@ function hasFirebaseConfig() {
 function stateForSave() {
   return {
     rounds: ST.rounds || [],
+    roundMeta: ST.roundMeta || {},
     leagues: ST.leagues || [],
     matches: ST.matches || []
   };
@@ -2045,7 +2485,10 @@ function stateForSave() {
 function applyState(nextState) {
   if (!nextState) return;
   ST = { ...ST, ...nextState };
+  if (!Array.isArray(ST.rounds)) ST.rounds = [];
+  if (!ST.roundMeta || typeof ST.roundMeta !== 'object' || Array.isArray(ST.roundMeta)) ST.roundMeta = {};
   if (!Array.isArray(ST.leagues)) ST.leagues = [];
+  if (!Array.isArray(ST.matches)) ST.matches = [];
 }
 
 function normalizeUpdatedAt(value) {
@@ -2176,7 +2619,10 @@ function initFirebase() {
       applyRemoteSnapshot(data, isFirstRemoteLoad);
     }, err => {
       console.warn('Firebase: erro ao carregar dados online', err);
-      toast('Nao foi possivel carregar os dados online agora.');
+      const permissionDenied = err && String(err.code || err.message || '').toLowerCase().includes('permission');
+      toast(permissionDenied
+        ? 'Firebase bloqueou o acesso. Verifique as regras do Realtime Database.'
+        : 'Não foi possível carregar os dados online agora.');
       loadLocalFallback();
       ensureDefaultRounds();
       ensureDefaultLeagues();
@@ -2227,44 +2673,110 @@ function closeConfirm() { document.getElementById('confirm-overlay').classList.r
 /* ============================================================
    SCORES
 ============================================================ */
-function scores() {
+function scores(matches = ST.matches) {
   let m=0, i=0, d=0, pen=0, neutral=0;
-  ST.matches.forEach(mx => {
+  matches.forEach(mx => {
     if      (mx.winner === 'miguel')  m++;
     else if (mx.winner === 'isaac')   i++;
     else if (mx.winner === 'draw')    d++;
     else                              neutral++;
     if (mx.penalties) pen++;
   });
-  return { m, i, d, pen, neutral, total: ST.matches.length };
+  return { m, i, d, pen, neutral, total: matches.length };
 }
 
 function calcWinner(mx) {
   // Same-owner matches don't count
   if (mx.ownerA !== 'none' && mx.ownerA === mx.ownerB) return 'neutral';
 
-  const gA = +mx.goalsA, gB = +mx.goalsB;
+  const scoreA = getMatchScoreA(mx);
+  const scoreB = getMatchScoreB(mx);
 
-  if (mx.penalties) {
+  if (getMatchSport(mx) === 'football' && mx.penalties) {
     const pA = +mx.penA, pB = +mx.penB;
     if (pA > pB) return mx.ownerA !== 'none' ? mx.ownerA : 'neutral';
     if (pB > pA) return mx.ownerB !== 'none' ? mx.ownerB : 'neutral';
     return 'draw';
   }
 
-  if (gA > gB) return mx.ownerA !== 'none' ? mx.ownerA : 'neutral';
-  if (gB > gA) return mx.ownerB !== 'none' ? mx.ownerB : 'neutral';
+  if (scoreA > scoreB) return mx.ownerA !== 'none' ? mx.ownerA : 'neutral';
+  if (scoreB > scoreA) return mx.ownerB !== 'none' ? mx.ownerB : 'neutral';
   return 'draw';
+}
+
+function getWinningSide(match) {
+  if (getMatchSport(match) === 'football' && match.penalties) {
+    if (+match.penA > +match.penB) return 'A';
+    if (+match.penB > +match.penA) return 'B';
+    return 'draw';
+  }
+  const scoreA = getMatchScoreA(match);
+  const scoreB = getMatchScoreB(match);
+  return scoreA > scoreB ? 'A' : scoreB > scoreA ? 'B' : 'draw';
+}
+
+function biggestMatchForSport(matches, sportId) {
+  const filtered = matchesForSport(matches, sportId);
+  return filtered.reduce((best, match) => {
+    const diff = Math.abs(getMatchScoreA(match) - getMatchScoreB(match));
+    const bestDiff = best ? Math.abs(getMatchScoreA(best) - getMatchScoreB(best)) : -1;
+    return diff > bestDiff ? match : best;
+  }, null);
 }
 
 /* ============================================================
    HEADER
 ============================================================ */
+function setScoreboardSport(sportId, animate = true) {
+  if (!SPORTS[sportId]) {
+    updateHeader();
+    return;
+  }
+
+  const changed = activeScoreboardSport !== sportId;
+  activeScoreboardSport = sportId;
+  const board = document.getElementById('main-scoreboard');
+  if (board) {
+    board.dataset.sport = sportId;
+    board.classList.toggle('sport-football', sportId === 'football');
+    board.classList.toggle('sport-basketball', sportId === 'basketball');
+    if (changed && animate) {
+      board.classList.remove('scoreboard-fade-in');
+      void board.offsetWidth;
+      board.classList.add('scoreboard-fade-in');
+      clearTimeout(scoreboardFadeTimer);
+      scoreboardFadeTimer = setTimeout(() => board.classList.remove('scoreboard-fade-in'), 520);
+    }
+  }
+  updateHeader();
+}
+
+function syncScoreboardForSection(section) {
+  const selectorBySection = {
+    dashboard: 'd-sport',
+    registro: 'r-sport',
+    rodadas: 'nr-sport',
+    ligas: 'l-sport',
+    historico: 'f-sport',
+    estatisticas: 'stats-sport'
+  };
+  const selector = document.getElementById(selectorBySection[section]);
+  const sportId = selector?.value;
+  if (SPORTS[sportId]) setScoreboardSport(sportId);
+}
+
 function updateHeader() {
-  const s = scores();
+  const sport = getSportConfig(activeScoreboardSport);
+  const matches = matchesForSport(ST.matches, activeScoreboardSport);
+  const s = scores(matches);
+  const middleValue = activeScoreboardSport === 'basketball'
+    ? matches.filter(match => match.overtime).length
+    : s.d;
   animNum('hdr-m', s.m);
   animNum('hdr-i', s.i);
-  animNum('hdr-d', s.d);
+  animNum('hdr-d', middleValue);
+  setTxt('hdr-sport-mode', `${sport.icon} ${sport.name}`);
+  setTxt('hdr-special-label', activeScoreboardSport === 'basketball' ? 'Prorrogações' : 'Empates');
 }
 
 function animNum(id, val) {
@@ -2288,7 +2800,11 @@ function addRound(name) {
   const val = name || (document.getElementById('nr-name').value.trim());
   if (!val) { toast('⚠️ Digite o nome da rodada'); return; }
   if (ST.rounds.includes(val)) { toast('⚠️ Rodada "' + val + '" já existe'); return; }
+  let sportId = document.getElementById('nr-sport')?.value || '';
+  const leagueId = document.getElementById('nr-league')?.value || '';
+  if (!sportId && leagueId) sportId = sportForLeague(getLeagueById(leagueId));
   ST.rounds.push(val);
+  if (sportId || leagueId) ST.roundMeta[val] = { sport: sportId || '', leagueId: leagueId || '' };
   save();
   if (!name) document.getElementById('nr-name').value = '';
   updateRoundSelects();
@@ -2302,6 +2818,7 @@ function deleteRound(name) {
     'As partidas desta rodada serão mantidas no histórico.',
     () => {
       ST.rounds = ST.rounds.filter(r => r !== name);
+      delete ST.roundMeta[name];
       save(); updateRoundSelects(); renderRounds();
       toast('🗑️ Rodada removida');
     }
@@ -2317,8 +2834,20 @@ function updateRoundSelects() {
     const ph = id === 'f-round'   ? '<option value="">Todas</option>'
              : id === 'r-round-sel' ? '<option value="">— Selecione —</option>'
              : '';
-    el.innerHTML = ph + ST.rounds.map(r => `<option value="${escHtml(r)}">${escHtml(r)}</option>`).join('');
-    el.value = cur;
+    const sportId = id === 'r-round-sel'
+      ? document.getElementById('r-sport')?.value || 'football'
+      : document.getElementById('f-sport')?.value || 'all';
+    const leagueId = id === 'r-round-sel'
+      ? document.getElementById('r-league-sel')?.value || ''
+      : document.getElementById('f-league')?.value || '';
+    const rounds = ST.rounds.filter(round => {
+      const meta = ST.roundMeta[round] || {};
+      if (sportId !== 'all' && meta.sport && meta.sport !== sportId) return false;
+      if (leagueId && meta.leagueId && meta.leagueId !== leagueId) return false;
+      return true;
+    });
+    el.innerHTML = ph + rounds.map(r => `<option value="${escHtml(r)}">${escHtml(r)}</option>`).join('');
+    el.value = rounds.includes(cur) ? cur : '';
   });
 }
 
@@ -2329,9 +2858,26 @@ function updateLeagueSelects() {
     if (!el) return;
     const cur = el.value;
     const ph = id === 'f-league' ? '<option value="">Todas</option>' : '<option value="">— Selecione —</option>';
-    el.innerHTML = ph + ST.leagues.map(l => `<option value="${escHtml(l.id)}">${escHtml(l.name)}</option>`).join('');
-    el.value = cur;
+    const sportId = id === 'r-league-sel'
+      ? document.getElementById('r-sport')?.value || 'football'
+      : document.getElementById('f-sport')?.value || 'all';
+    const leagues = ST.leagues.filter(league => sportId === 'all' || sportForLeague(league) === sportId);
+    el.innerHTML = ph + leagues.map(l => `<option value="${escHtml(l.id)}">${getSportConfig(sportForLeague(l)).icon} ${escHtml(l.name)}</option>`).join('');
+    el.value = leagues.some(league => league.id === cur) ? cur : '';
   });
+}
+
+function updateRoundLeagueSelect() {
+  const el = document.getElementById('nr-league');
+  if (!el) return;
+  ensureDefaultLeagues();
+  const cur = el.value;
+  const sportId = document.getElementById('nr-sport')?.value || '';
+  const leagues = ST.leagues.filter(league => !sportId || sportForLeague(league) === sportId);
+  el.innerHTML = '<option value="">Todas</option>' + leagues
+    .map(league => `<option value="${escHtml(league.id)}">${getSportConfig(sportForLeague(league)).icon} ${escHtml(league.name)}</option>`)
+    .join('');
+  el.value = leagues.some(league => league.id === cur) ? cur : '';
 }
 
 /* ============================================================
@@ -2347,19 +2893,22 @@ function teamMatchesText(team, value) {
   return searchable.some(text => text.includes(normalizedValue));
 }
 
-function getTeamByName(name) {
+function getTeamByName(name, sportId) {
   const normalizedName = normalizeTeamText(name).trim();
-  return TEAMS.find(team => [team.name, ...(team.tags || [])].some(value => normalizeTeamText(value).trim() === normalizedName)) || null;
+  const candidates = sportId ? teamsForSport(sportId) : TEAMS;
+  return candidates.find(team => [team.name, ...(team.tags || [])].some(value => normalizeTeamText(value).trim() === normalizedName)) || null;
 }
 
-function resolveTeamData(name) {
+function resolveTeamData(name, sportId = 'football') {
   const typedName = String(name || '').trim();
-  const foundTeam = getTeamByName(typedName);
+  const normalizedSport = getSportConfig(sportId).id;
+  const foundTeam = getTeamByName(typedName, normalizedSport);
   if (foundTeam) {
     return {
       id: foundTeam.id,
       name: foundTeam.name,
-      logo: foundTeam.logo || DEFAULT_TEAM_LOGO
+      sport: foundTeam.sport || normalizedSport,
+      logo: foundTeam.logo || teamLogoFallback(normalizedSport)
     };
   }
 
@@ -2371,7 +2920,8 @@ function resolveTeamData(name) {
   return {
     id: id || 'time_sem_nome',
     name: typedName,
-    logo: DEFAULT_TEAM_LOGO
+    sport: normalizedSport,
+    logo: teamLogoFallback(normalizedSport)
   };
 }
 
@@ -2394,10 +2944,12 @@ function renderTeamSuggestions(inputId) {
     return;
   }
 
-  const suggestions = TEAMS.filter(team => teamMatchesText(team, term));
+  const sportId = document.getElementById('r-sport')?.value || 'football';
+  const fallbackLogo = teamLogoFallback(sportId);
+  const suggestions = teamsForSport(sportId).filter(team => teamMatchesText(team, term));
   list.innerHTML = suggestions.map(team =>
     `<button type="button" class="autocomplete-item" onclick="selectTeamSuggestion('${inputId}', '${escHtml(team.name)}')">
-      <img class="autocomplete-logo" src="${escHtml(team.logo || DEFAULT_TEAM_LOGO)}" alt="" onerror="this.onerror=null;this.src='${DEFAULT_TEAM_LOGO}'">
+      <img class="autocomplete-logo${isCountryTeamData(team) ? ' is-country' : ''}" src="${escHtml(team.logo || fallbackLogo)}" alt="" onerror="this.onerror=null;this.src='${fallbackLogo}'">
       <span class="autocomplete-name">${escHtml(team.name)}</span>
     </button>`
   ).join('');
@@ -2426,15 +2978,80 @@ function initTeamAutocomplete() {
 /* ============================================================
    REGISTER MATCH
 ============================================================ */
+function syncScoreboardFromSelect(selectId) {
+  const sportId = document.getElementById(selectId)?.value;
+  if (SPORTS[sportId]) setScoreboardSport(sportId);
+}
+
+function handleDashboardSportChange() {
+  syncScoreboardFromSelect('d-sport');
+  renderDashboard();
+}
+
+function handleLeagueSportChange() {
+  syncScoreboardFromSelect('l-sport');
+  renderLeagues();
+}
+
+function handleStatsSportChange() {
+  syncScoreboardFromSelect('stats-sport');
+  renderStats();
+}
+
+function handleRoundSportChange() {
+  syncScoreboardFromSelect('nr-sport');
+  updateRoundLeagueSelect();
+}
+
+function handleRegistrationSportChange(clearTeams = true) {
+  const sportId = document.getElementById('r-sport')?.value || 'football';
+  setScoreboardSport(sportId);
+  const sport = getSportConfig(sportId);
+  setTxt('r-score-label-a', `${sport.scoreLabel} Time A`);
+  setTxt('r-score-label-b', `${sport.scoreLabel} Time B`);
+
+  const footballOptions = document.getElementById('football-options');
+  const basketballOptions = document.getElementById('basketball-options');
+  if (footballOptions) footballOptions.style.display = sport.allowsPenalties ? 'flex' : 'none';
+  if (basketballOptions) basketballOptions.style.display = sportId === 'basketball' ? 'flex' : 'none';
+
+  if (!sport.allowsPenalties) {
+    document.getElementById('r-pen-chk').checked = false;
+    document.getElementById('pen-block').style.display = 'none';
+  }
+  if (sportId !== 'basketball') document.getElementById('r-ot-chk').checked = false;
+
+  if (clearTeams) {
+    document.getElementById('r-ta').value = '';
+    document.getElementById('r-tb').value = '';
+  }
+  closeAutocomplete();
+  updateLeagueSelects();
+  updateRoundSelects();
+}
+
+function handleHistorySportChange() {
+  syncScoreboardFromSelect('f-sport');
+  updateLeagueSelects();
+  updateRoundSelects();
+  renderHistory();
+}
+
 function togglePen() {
+  if ((document.getElementById('r-sport')?.value || 'football') !== 'football') {
+    document.getElementById('r-pen-chk').checked = false;
+  }
   document.getElementById('pen-block').style.display =
     document.getElementById('r-pen-chk').checked ? 'grid' : 'none';
 }
 
 function registerMatch() {
+  const sportId = document.getElementById('r-sport').value;
+  const sport = getSportConfig(sportId);
   const leagueId = document.getElementById('r-league-sel').value;
-  const league = getLeagueById(leagueId);
   if (!leagueId) { toast('⚠️ Selecione uma liga/campeonato'); flashShake('r-league-sel'); return; }
+  const league = getLeagueById(leagueId, sportId);
+  if (sportForLeague(league) !== sportId) { toast('⚠️ A liga selecionada não pertence a esta modalidade'); return; }
 
   const roundSel = document.getElementById('r-round-sel').value.trim();
   const roundNew = document.getElementById('r-round-new').value.trim();
@@ -2448,26 +3065,47 @@ function registerMatch() {
 
   const ownerA = document.getElementById('r-oa').value;
   const ownerB = document.getElementById('r-ob').value;
-  const goalsA = Math.max(0, parseInt(document.getElementById('r-ga').value) || 0);
-  const goalsB = Math.max(0, parseInt(document.getElementById('r-gb').value) || 0);
-  const hasPen = document.getElementById('r-pen-chk').checked;
+  const scoreA = Math.max(0, parseInt(document.getElementById('r-ga').value) || 0);
+  const scoreB = Math.max(0, parseInt(document.getElementById('r-gb').value) || 0);
+  if (!sport.allowsDraw && scoreA === scoreB) {
+    toast('Partidas de basquete não podem terminar empatadas. Informe o placar após a prorrogação.');
+    flashShake('r-ga');
+    flashShake('r-gb');
+    return;
+  }
+  const hasPen = sport.allowsPenalties && document.getElementById('r-pen-chk').checked;
   const penA   = hasPen ? Math.max(0, parseInt(document.getElementById('r-pa').value) || 0) : null;
   const penB   = hasPen ? Math.max(0, parseInt(document.getElementById('r-pb').value) || 0) : null;
+  const overtime = sportId === 'basketball' && document.getElementById('r-ot-chk').checked;
   const obs    = document.getElementById('r-obs').value.trim();
   const matchDate = dateInputToDisplay(document.getElementById('r-date').value);
-  const teamAData = resolveTeamData(ta);
-  const teamBData = resolveTeamData(tb);
+  const teamAData = resolveTeamData(ta, sportId);
+  const teamBData = resolveTeamData(tb, sportId);
 
   // Auto-create round
-  if (roundNew && !ST.rounds.includes(roundNew)) { ST.rounds.push(roundNew); }
+  if (roundNew && !ST.rounds.includes(roundNew)) {
+    ST.rounds.push(roundNew);
+    ST.roundMeta[roundNew] = { sport: sportId, leagueId: league.id };
+  }
 
-  const mx = { id: Date.now(), round, leagueId: league.id, leagueName: league.name, teamA:ta, teamB:tb, teamAData, teamBData, ownerA, ownerB, goalsA, goalsB, penalties:hasPen, penA, penB, obs, date: matchDate };
+  const mx = {
+    id: Date.now(), sport: sportId, round,
+    leagueId: league.id, leagueName: league.name,
+    teamA: ta, teamB: tb, teamAData, teamBData,
+    ownerA, ownerB, scoreA, scoreB,
+    overtime, penalties: hasPen, penA, penB,
+    obs, date: matchDate
+  };
+  if (sportId === 'football') {
+    mx.goalsA = scoreA;
+    mx.goalsB = scoreB;
+  }
   mx.winner = calcWinner(mx);
   ST.matches.push(mx);
   save();
 
   updateHeader(); updateRoundSelects();
-  toast('⚽ Partida registrada! ' + ta + ' ' + goalsA + ' × ' + goalsB + ' ' + tb);
+  toast(sport.icon + ' Partida registrada! ' + ta + ' ' + scoreA + ' × ' + scoreB + ' ' + tb);
 
   // Glow on winning matches
   if (mx.winner !== 'draw' && mx.winner !== 'neutral') {
@@ -2486,6 +3124,7 @@ function clearReg() {
   document.getElementById('r-ga').value = '0';
   document.getElementById('r-gb').value = '0';
   document.getElementById('r-pen-chk').checked = false;
+  document.getElementById('r-ot-chk').checked = false;
   document.getElementById('pen-block').style.display = 'none';
   document.getElementById('r-pa').value = '3';
   document.getElementById('r-pb').value = '2';
@@ -2519,9 +3158,14 @@ const OWNER_NAME  = { miguel:'Miguel', isaac:'Isaac', none:'—' };
 const OWNER_CLASS = { miguel:'miguel',  isaac:'isaac', none:'none' };
 
 function matchCard(mx, canDelete=true, compact=false) {
-  const teamAData = mx.teamAData || resolveTeamData(mx.teamA);
-  const teamBData = mx.teamBData || resolveTeamData(mx.teamB);
+  const sportId = getMatchSport(mx);
+  const sport = getSportConfig(sportId);
+  const fallbackLogo = teamLogoFallback(sportId);
+  const teamAData = mx.teamAData || resolveTeamData(mx.teamA, sportId);
+  const teamBData = mx.teamBData || resolveTeamData(mx.teamB, sportId);
   const matchLeague = leagueForMatch(mx);
+  const scoreA = getMatchScoreA(mx);
+  const scoreB = getMatchScoreB(mx);
 
   const borderClass = mx.penalties && mx.winner !== 'neutral'
     ? 'is-penalties'
@@ -2543,40 +3187,48 @@ function matchCard(mx, canDelete=true, compact=false) {
   const penLine = mx.penalties
     ? `<div class="mc-pen">🥅 Pênaltis: ${mx.penA} × ${mx.penB}</div>` : '';
 
+  const overtimeLine = sportId === 'basketball' && mx.overtime
+    ? '<div class="sport-note">Vitória na prorrogação</div>' : '';
+
   const obsLine = mx.obs
     ? `<div class="mc-obs">💬 ${escHtml(mx.obs)}</div>` : '';
 
   const penBadge = mx.penalties ? ' <span class="badge badge-p">Pênaltis</span>' : '';
+  const overtimeBadge = sportId === 'basketball' && mx.overtime
+    ? ' <span class="badge badge-n">Prorrogação</span>' : '';
 
   return `
-  <div class="match-card ${compact ? 'match-card-compact ' : ''}${borderClass}">
+  <div class="match-card sport-${sportId} ${compact ? 'match-card-compact ' : ''}${borderClass}">
     ${delBtn}
     <div class="mc-top">
       <div class="mc-tags">
         <span class="league-pill">
-          <img class="league-pill-logo" src="${escHtml(matchLeague.logo || DEFAULT_LEAGUE_LOGO)}" alt="" onerror="this.onerror=null;this.src='${DEFAULT_LEAGUE_LOGO}'">
+          <span class="league-sport-icon" title="${escHtml(sport.name)}">${sport.icon}</span>
+          <img class="league-pill-logo" src="${escHtml(matchLeague.logo || matchLeague.fallbackLogo)}" alt="" onerror="this.onerror=null;this.src='${matchLeague.fallbackLogo}'">
           <span class="league-pill-name">${escHtml(matchLeague.name || 'Amistosos')}</span>
         </span>
         ${penBadge}
+        ${overtimeBadge}
       </div>
-      <span class="mc-date">${mx.date}</span>
+      <span class="mc-date">${escHtml(mx.date || '')}</span>
     </div>
     <div class="mc-body">
       <div class="mc-team">
         <div class="mc-team-title">
-          <img class="mc-team-logo" src="${escHtml(teamAData.logo || DEFAULT_TEAM_LOGO)}" alt="" onerror="this.onerror=null;this.src='${DEFAULT_TEAM_LOGO}'">
+          <img class="mc-team-logo${isCountryTeamData(teamAData) ? ' is-country' : ''}" src="${escHtml(teamAData.logo || fallbackLogo)}" alt="" onerror="this.onerror=null;this.src='${fallbackLogo}'">
           <div class="mc-team-name">${escHtml(teamAData.name || mx.teamA)}</div>
         </div>
         <div class="mc-team-owner ${OWNER_CLASS[mx.ownerA]}">${OWNER_NAME[mx.ownerA]}</div>
       </div>
       <div class="mc-center">
-        <div class="mc-score">${mx.goalsA}<span style="color:var(--text-dim);margin:0 8px">×</span>${mx.goalsB}</div>
+        <div class="mc-score">${scoreA}<span style="color:var(--text-dim);margin:0 8px">×</span>${scoreB}</div>
         ${penLine}
+        ${overtimeLine}
         ${verdictMap[mx.winner] || ''}
       </div>
       <div class="mc-team right">
         <div class="mc-team-title">
-          <img class="mc-team-logo" src="${escHtml(teamBData.logo || DEFAULT_TEAM_LOGO)}" alt="" onerror="this.onerror=null;this.src='${DEFAULT_TEAM_LOGO}'">
+          <img class="mc-team-logo${isCountryTeamData(teamBData) ? ' is-country' : ''}" src="${escHtml(teamBData.logo || fallbackLogo)}" alt="" onerror="this.onerror=null;this.src='${fallbackLogo}'">
           <div class="mc-team-name">${escHtml(teamBData.name || mx.teamB)}</div>
         </div>
         <div class="mc-team-owner ${OWNER_CLASS[mx.ownerB]}">${OWNER_NAME[mx.ownerB]}</div>
@@ -2597,16 +3249,20 @@ function renderLeagues() {
   const el = document.getElementById('leagues-grid');
   if (!el) return;
   ensureDefaultLeagues();
+  const selectedSport = document.getElementById('l-sport')?.value || 'football';
+  const leagues = ST.leagues.filter(league => sportForLeague(league) === selectedSport);
 
-  el.innerHTML = ST.leagues.map(league => {
+  el.innerHTML = leagues.map(league => {
     const st = leagueStats(league.id);
     const glow = competitionGlow(league.id);
+    const sport = getSportConfig(sportForLeague(league));
+    const fallbackLogo = leagueLogoFallback(league);
     return `
-      <button type="button" class="league-card" style="--league-a:${glow[0]};--league-b:${glow[1]};--league-c:${glow[2]};" onclick="openLeagueModal('${escHtml(league.id)}')">
+      <button type="button" class="league-card sport-${sport.id}" style="--league-a:${glow[0]};--league-b:${glow[1]};--league-c:${glow[2]};" onclick="openLeagueModal('${escHtml(league.id)}')">
         <div class="league-logo-wrap">
-          <img class="league-logo" src="${escHtml(leagueLogo(league))}" alt="" onerror="this.onerror=null;this.classList.add('is-fallback');this.src='${DEFAULT_LEAGUE_LOGO}'">
+          <img class="league-logo" src="${escHtml(leagueLogo(league))}" alt="" onerror="this.onerror=null;this.classList.add('is-fallback');this.src='${fallbackLogo}'">
         </div>
-        <div class="league-name">${escHtml(league.name)}</div>
+        <div class="league-name"><span class="sport-badge ${sport.id}">${sport.icon}</span> ${escHtml(league.name)}</div>
         <div class="league-desc">${escHtml(league.subtitle || league.description || 'Competição')}</div>
         <div class="league-summary">${st.total} partida${st.total!==1?'s':''} registrada${st.total!==1?'s':''}</div>
       </button>`;
@@ -2614,10 +3270,13 @@ function renderLeagues() {
 }
 
 function openLeagueModal(leagueId) {
-  const league = getLeagueById(leagueId);
+  const directLeague = ST.leagues.find(item => item.id === leagueId);
+  const league = getLeagueById(leagueId, sportForLeague(directLeague));
+  const sport = getSportConfig(sportForLeague(league));
+  const fallbackLogo = leagueLogoFallback(league);
   const st = leagueStats(league.id);
   const matches = ST.matches
-    .filter(match => (match.leagueId || 'amistosos') === league.id)
+    .filter(match => effectiveLeagueIdForMatch(match) === league.id)
     .slice()
     .reverse();
   const body = document.getElementById('league-modal-body');
@@ -2627,16 +3286,16 @@ function openLeagueModal(leagueId) {
     ? matches.map(match => `
       <div class="league-match-row">
         <span>${escHtml(match.teamA || '')}</span>
-        <span class="score">${match.goalsA} × ${match.goalsB}</span>
+        <span class="score">${getMatchScoreA(match)} × ${getMatchScoreB(match)}</span>
         <span style="text-align:right">${escHtml(match.teamB || '')}</span>
       </div>`).join('')
     : '<div class="empty-state"><span class="empty-icon">🏟️</span><p>Nenhuma partida registrada nesta competição</p></div>';
 
   body.innerHTML = `
     <div class="league-modal-top">
-      <img class="league-modal-logo" src="${escHtml(leagueLogo(league))}" alt="" onerror="this.onerror=null;this.classList.add('is-fallback');this.src='${DEFAULT_LEAGUE_LOGO}'">
+      <img class="league-modal-logo" src="${escHtml(leagueLogo(league))}" alt="" onerror="this.onerror=null;this.classList.add('is-fallback');this.src='${fallbackLogo}'">
       <div>
-        <div class="league-modal-title">${escHtml(league.name)}</div>
+        <div class="league-modal-title">${sport.icon} ${escHtml(league.name)}</div>
         <div class="league-modal-sub">${escHtml(league.subtitle || league.description || 'Competição')}</div>
       </div>
       <button class="league-modal-close" onclick="closeLeagueModal()" title="Fechar">×</button>
@@ -2645,7 +3304,7 @@ function openLeagueModal(leagueId) {
       <div class="league-modal-stat"><strong>${st.total}</strong><span>Total de jogos</span></div>
       <div class="league-modal-stat"><strong style="color:var(--miguel)">${st.miguel}</strong><span>Vitórias Miguel</span></div>
       <div class="league-modal-stat"><strong style="color:var(--isaac)">${st.isaac}</strong><span>Vitórias Isaac</span></div>
-      <div class="league-modal-stat"><strong style="color:#22d3ee">${st.draws}</strong><span>Empates</span></div>
+      <div class="league-modal-stat"><strong style="color:#22d3ee">${sport.id === 'basketball' ? matches.filter(match => match.overtime).length : st.draws}</strong><span>${sport.id === 'basketball' ? 'Prorrogações' : 'Empates'}</span></div>
     </div>
     <h3 class="card-title" style="margin-bottom:12px">Partidas</h3>
     <div class="league-match-list">${matchRows}</div>`;
@@ -2665,7 +3324,9 @@ function competitionGlow(leagueId) {
     libertadores: ['#7B61FF', '#C7A24A', '#FF4FD8'],
     copa_do_brasil: ['#00E5FF', '#22C55E', '#7B61FF'],
     uefa_champions_league: ['#00BFFF', '#00E5FF', '#7B61FF'],
-    mundial_de_clubes: ['#7B61FF', '#FF4FD8', '#00E5FF']
+    mundial_de_clubes: ['#7B61FF', '#FF4FD8', '#00E5FF'],
+    nba_2k: ['#f97316', '#00BFFF', '#7B61FF'],
+    nba_finals: ['#f97316', '#facc15', '#FF4FD8']
   };
   return map[leagueId] || ['#00BFFF', '#7B61FF', '#FF4FD8'];
 }
@@ -2683,6 +3344,9 @@ function renderRounds() {
   }
 
   el.innerHTML = ST.rounds.map(rnd => {
+    const meta = ST.roundMeta[rnd] || {};
+    const sport = meta.sport ? getSportConfig(meta.sport) : null;
+    const linkedLeague = meta.leagueId ? getLeagueById(meta.leagueId, meta.sport || 'football') : null;
     const ms   = ST.matches.filter(m => m.round === rnd);
     const mw   = ms.filter(m => m.winner === 'miguel').length;
     const iw   = ms.filter(m => m.winner === 'isaac').length;
@@ -2692,7 +3356,7 @@ function renderRounds() {
       ? ms.map(m => `
           <div class="round-mini">
             <span style="color:var(--${m.ownerA === 'miguel' ? 'miguel' : m.ownerA === 'isaac' ? 'isaac' : 'text-dim'})">${escHtml(m.teamA)}</span>
-            <span style="font-family:var(--font-d);letter-spacing:1px">${m.goalsA}×${m.goalsB}</span>
+            <span style="font-family:var(--font-d);letter-spacing:1px">${getSportConfig(getMatchSport(m)).icon} ${getMatchScoreA(m)}×${getMatchScoreB(m)}</span>
             <span style="color:var(--${m.ownerB === 'miguel' ? 'miguel' : m.ownerB === 'isaac' ? 'isaac' : 'text-dim'})">${escHtml(m.teamB)}</span>
           </div>`).join('')
       : '<div style="color:var(--text-dim);font-size:13px;padding:4px">Sem partidas ainda</div>';
@@ -2700,7 +3364,7 @@ function renderRounds() {
     return `
     <div class="round-card">
       <div class="round-hdr">
-        <span class="round-name">${escHtml(rnd)}</span>
+        <span class="round-name">${sport ? sport.icon + ' ' : ''}${escHtml(rnd)}${linkedLeague ? `<small style="display:block;font-family:var(--font-b);font-size:10px;color:var(--text-dim);letter-spacing:1px">${escHtml(linkedLeague.name)}</small>` : ''}</span>
         <div style="display:flex;align-items:center;gap:10px">
           <span style="color:var(--text-dim);font-size:12px">${ms.length} jogo${ms.length!==1?'s':''}</span>
           <button class="btn btn-danger btn-sm" onclick="deleteRound('${escHtml(rnd)}')">✕</button>
@@ -2729,9 +3393,10 @@ function renderHistory() {
   const rf = document.getElementById('f-round').value;
   const lf = document.getElementById('f-league').value;
   const wf = document.getElementById('f-winner').value;
+  const sf = document.getElementById('f-sport')?.value || 'all';
 
-  let ms = [...ST.matches].reverse();
-  if (lf) ms = ms.filter(m => (m.leagueId || 'amistosos') === lf);
+  let ms = matchesForSport([...ST.matches].reverse(), sf);
+  if (lf) ms = ms.filter(m => effectiveLeagueIdForMatch(m) === lf);
   if (rf) ms = ms.filter(m => m.round === rf);
   if (wf) ms = ms.filter(m => m.winner === wf);
 
@@ -2751,9 +3416,12 @@ function renderHistory() {
 }
 
 function clearFilters() {
+  document.getElementById('f-sport').value = 'all';
   document.getElementById('f-league').value = '';
   document.getElementById('f-round').value  = '';
   document.getElementById('f-winner').value = '';
+  updateLeagueSelects();
+  updateRoundSelects();
   renderHistory();
 }
 
@@ -2761,15 +3429,20 @@ function clearFilters() {
    RENDER DASHBOARD
 ============================================================ */
 function renderDashboard() {
-  const s = scores();
+  const selectedSport = document.getElementById('d-sport')?.value || 'all';
+  const dashboardMatches = matchesForSport(ST.matches, selectedSport);
+  const s = scores(dashboardMatches);
+  const overtimeCount = dashboardMatches.filter(match => getMatchSport(match) === 'basketball' && match.overtime).length;
+  const specialCount = selectedSport === 'basketball' ? overtimeCount : selectedSport === 'football' ? s.pen : s.pen + overtimeCount;
 
   // Stats
   setTxt('d-mw', s.m);
   setTxt('d-dr', s.d);
   setTxt('d-iw', s.i);
-  setTxt('d-pen', s.pen);
+  setTxt('d-pen', specialCount);
+  setTxt('d-special-lbl', selectedSport === 'basketball' ? 'Prorrogações' : selectedSport === 'football' ? 'Pênaltis' : 'Pênaltis / Prorrog.');
   setTxt('d-total', s.total);
-  setTxt('d-rounds', ST.rounds.length);
+  setTxt('d-rounds', selectedSport === 'all' ? ST.rounds.length : new Set(dashboardMatches.map(match => match.round)).size);
 
   // Bar
   const cnt  = s.m + s.i;
@@ -2783,38 +3456,46 @@ function renderDashboard() {
   setTxt('bar-ld', s.d + ' empate' + (s.d !== 1 ? 's' : ''));
   setTxt('bar-li', s.i + ' vitória' + (s.i !== 1 ? 's' : ''));
 
-  // Recent
-  const recent = [...ST.matches].reverse().slice(0, 4);
+  // Recent by informed match date, not insertion order.
+  const recent = sortMatchesByDateDesc(dashboardMatches).slice(0, 8);
   const rEl = document.getElementById('d-recent');
   rEl.innerHTML = recent.length
     ? recent.map(m => compactMatchCard(m)).join('')
-    : '<div class="empty-state"><span class="empty-icon">⚽</span><p>Nenhuma partida registrada ainda</p><p style="margin-top:8px;font-size:13px">Vá em <strong>Registrar</strong> para começar!</p></div>';
+    : `<div class="empty-state"><span class="empty-icon">${selectedSport === 'basketball' ? '🏀' : '⚽'}</span><p>Nenhuma partida registrada ainda</p><p style="margin-top:8px;font-size:13px">Vá em <strong>Registrar</strong> para começar!</p></div>`;
 
   ensureDefaultLeagues();
-  const leagueRows = ST.leagues.map(league => ({ league, stats: leagueStats(league.id) }));
+  const dashboardLeagues = ST.leagues.filter(league => selectedSport === 'all' || sportForLeague(league) === selectedSport);
+  const leagueRows = dashboardLeagues.map(league => ({ league, stats: leagueStats(league.id, dashboardMatches) }));
   const byTotal = [...leagueRows].sort((a,b) => b.stats.total - a.stats.total)[0];
   const byMiguel = [...leagueRows].sort((a,b) => b.stats.miguel - a.stats.miguel)[0];
   const byIsaac = [...leagueRows].sort((a,b) => b.stats.isaac - a.stats.isaac)[0];
-  const latest = ST.matches.length ? ST.matches[ST.matches.length - 1] : null;
-  const bigScore = ST.matches.length
-    ? [...ST.matches].sort((a,b) => ((+b.goalsA || 0) + (+b.goalsB || 0)) - ((+a.goalsA || 0) + (+a.goalsB || 0)))[0]
-    : null;
+  const latest = recent[0] || null;
+  const footballBig = biggestMatchForSport(dashboardMatches, 'football');
+  const basketballBig = biggestMatchForSport(dashboardMatches, 'basketball');
 
   const winnerLabel = !latest ? 'Sem dados'
     : latest.winner === 'draw' ? 'Empate'
     : latest.winner === 'neutral' ? 'Sem pontuação'
     : OWNER_NAME[latest.winner] || 'Sem dados';
 
-  const bigScoreLabel = bigScore
-    ? `${bigScore.teamA} ${bigScore.goalsA}×${bigScore.goalsB} ${bigScore.teamB}`
+  const formatBigMatch = match => match
+    ? `${match.teamA} ${getMatchScoreA(match)}×${getMatchScoreB(match)} ${match.teamB}`
     : 'Sem dados';
+  const bigScoreLabel = selectedSport === 'football'
+    ? formatBigMatch(footballBig)
+    : selectedSport === 'basketball'
+      ? formatBigMatch(basketballBig)
+      : `⚽ ${formatBigMatch(footballBig)} | 🏀 ${formatBigMatch(basketballBig)}`;
+  const bigScoreTitle = selectedSport === 'football' ? 'Maior goleada'
+    : selectedSport === 'basketball' ? 'Maior diferença de pontos'
+    : 'Destaques de placar';
 
   const iEl = document.getElementById('d-insights');
   if (iEl) {
     iEl.innerHTML = `
       <div class="dashboard-insight-row"><span>Liga com mais partidas</span><strong>${byTotal && byTotal.stats.total ? escHtml(byTotal.league.name) + ' (' + byTotal.stats.total + ')' : 'Sem dados'}</strong></div>
       <div class="dashboard-insight-row"><span>Último vencedor</span><strong>${escHtml(winnerLabel)}</strong></div>
-      <div class="dashboard-insight-row"><span>Maior placar</span><strong>${escHtml(bigScoreLabel)}</strong></div>`;
+      <div class="dashboard-insight-row"><span>${bigScoreTitle}</span><strong title="${escHtml(bigScoreLabel)}">${escHtml(bigScoreLabel)}</strong></div>`;
   }
 
   // Leader
@@ -2843,123 +3524,126 @@ function renderDashboard() {
 /* ============================================================
    RENDER STATS
 ============================================================ */
+function ownerScoreTotal(matches, owner) {
+  return matches.reduce((total, match) => {
+    if (match.ownerA === owner) total += getMatchScoreA(match);
+    if (match.ownerB === owner) total += getMatchScoreB(match);
+    return total;
+  }, 0);
+}
+
+function mostUsedTeamByOwner(matches, owner) {
+  const counts = {};
+  matches.forEach(match => {
+    if (match.ownerA === owner) counts[match.teamA] = (counts[match.teamA] || 0) + 1;
+    if (match.ownerB === owner) counts[match.teamB] = (counts[match.teamB] || 0) + 1;
+  });
+  return Object.entries(counts).sort((a,b) => b[1] - a[1])[0] || null;
+}
+
+function mostWinningTeam(matches) {
+  const counts = {};
+  matches.forEach(match => {
+    const side = getWinningSide(match);
+    const team = side === 'A' ? match.teamA : side === 'B' ? match.teamB : null;
+    if (team) counts[team] = (counts[team] || 0) + 1;
+  });
+  return Object.entries(counts).sort((a,b) => b[1] - a[1])[0] || null;
+}
+
+function topTeamsForMatches(matches, limit = 5) {
+  const counts = {};
+  matches.forEach(match => {
+    counts[match.teamA] = (counts[match.teamA] || 0) + 1;
+    counts[match.teamB] = (counts[match.teamB] || 0) + 1;
+  });
+  return Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, limit);
+}
+
 function renderStats() {
   const el = document.getElementById('stats-body');
   if (!el) return;
 
-  const s = scores();
+  const selectedSport = document.getElementById('stats-sport')?.value || 'all';
+  const filteredMatches = matchesForSport(ST.matches, selectedSport);
+  const s = scores(filteredMatches);
+  const overtimeTotal = filteredMatches.filter(match => getMatchSport(match) === 'basketball' && match.overtime).length;
+  const decidedPct = s.total ? Math.round(((s.m + s.i) / s.total) * 100) + '%' : '—';
+  const visibleSports = selectedSport === 'all' ? ['football', 'basketball'] : [selectedSport];
+  const topTeams = topTeamsForMatches(filteredMatches);
+  const visibleRounds = ST.rounds.filter(round => filteredMatches.some(match => match.round === round));
 
-  // Goals
-  let gM=0, gI=0, penM=0, penI=0;
-  ST.matches.forEach(m => {
-    if (m.ownerA==='miguel') gM += +m.goalsA; if (m.ownerA==='isaac') gI += +m.goalsA;
-    if (m.ownerB==='miguel') gM += +m.goalsB; if (m.ownerB==='isaac') gI += +m.goalsB;
-    if (m.winner==='miguel' && m.penalties) penM++;
-    if (m.winner==='isaac'  && m.penalties) penI++;
-  });
+  const sportCards = visibleSports.map(sportId => {
+    const sport = getSportConfig(sportId);
+    const matches = matchesForSport(filteredMatches, sportId);
+    const sportScore = scores(matches);
+    const miguelTotal = ownerScoreTotal(matches, 'miguel');
+    const isaacTotal = ownerScoreTotal(matches, 'isaac');
+    const miguelTeam = mostUsedTeamByOwner(matches, 'miguel');
+    const isaacTeam = mostUsedTeamByOwner(matches, 'isaac');
+    const winningTeam = mostWinningTeam(matches);
+    const biggest = biggestMatchForSport(matches, sportId);
+    const miguelPct = matches.length ? Math.round((sportScore.m / matches.length) * 100) : 0;
+    const isaacPct = matches.length ? Math.round((sportScore.i / matches.length) * 100) : 0;
+    const special = sportId === 'football'
+      ? `${matches.filter(match => match.penalties).length} por pênaltis`
+      : `${matches.filter(match => match.overtime).length} na prorrogação`;
+    const biggestLabel = sportId === 'football' ? 'Maior goleada' : 'Maior diferença de pontos';
 
-  // Biggest win
-  let bigWin = null;
-  ST.matches.forEach(m => {
-    const d = Math.abs(m.goalsA - m.goalsB);
-    if (!bigWin || d > Math.abs(bigWin.goalsA - bigWin.goalsB)) bigWin = m;
-  });
+    return `
+      <div class="sport-summary-card ${sportId}">
+        <div class="sport-summary-title"><span>${sport.icon} ${sport.name}</span><span class="badge badge-n">${matches.length} jogo${matches.length!==1?'s':''}</span></div>
+        <div class="h2h-row"><span>Vitórias</span><strong style="color:var(--miguel)">Miguel ${sportScore.m}</strong><strong style="color:var(--isaac)">Isaac ${sportScore.i}</strong></div>
+        <div class="h2h-row"><span>Aproveitamento</span><strong>M ${miguelPct}%</strong><strong>I ${isaacPct}%</strong></div>
+        <div class="h2h-row"><span>${sport.scoreLabel}</span><strong>M ${miguelTotal}</strong><strong>I ${isaacTotal}</strong></div>
+        <div class="h2h-row"><span>Mais usado por Miguel</span><strong>${miguelTeam ? escHtml(miguelTeam[0]) + ' (' + miguelTeam[1] + ')' : '—'}</strong></div>
+        <div class="h2h-row"><span>Mais usado por Isaac</span><strong>${isaacTeam ? escHtml(isaacTeam[0]) + ' (' + isaacTeam[1] + ')' : '—'}</strong></div>
+        <div class="h2h-row"><span>Equipe mais vitoriosa</span><strong>${winningTeam ? escHtml(winningTeam[0]) + ' (' + winningTeam[1] + ')' : '—'}</strong></div>
+        <div class="h2h-row"><span>${biggestLabel}</span><strong>${biggest ? escHtml(biggest.teamA) + ' ' + getMatchScoreA(biggest) + '×' + getMatchScoreB(biggest) + ' ' + escHtml(biggest.teamB) : '—'}</strong></div>
+        <div class="h2h-row"><span>Decisões especiais</span><strong>${special}</strong></div>
+      </div>`;
+  }).join('');
 
-  // Most played teams
-  const teamCounts = {};
-  ST.matches.forEach(m => {
-    teamCounts[m.teamA] = (teamCounts[m.teamA]||0)+1;
-    teamCounts[m.teamB] = (teamCounts[m.teamB]||0)+1;
-  });
-  const topTeams = Object.entries(teamCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
-
-  const winPct = s.total > 0
-    ? (((s.m + s.i) / s.total) * 100).toFixed(0) + '%'
-    : '—';
+  const biggestCards = visibleSports.map(sportId => {
+    const biggest = biggestMatchForSport(filteredMatches, sportId);
+    if (!biggest) return '';
+    const sport = getSportConfig(sportId);
+    return `<div class="card" style="margin-bottom:20px"><h3 class="card-title">${sport.icon} ${sportId === 'football' ? 'Maior Goleada' : 'Maior Diferença de Pontos'}</h3>${matchCard(biggest, false)}</div>`;
+  }).join('');
 
   el.innerHTML = `
     <div class="stats-grid">
-      <div class="stat-box" style="border-top:2px solid var(--miguel)">
-        <div class="stat-val" style="color:var(--miguel)">${gM}</div>
-        <div class="stat-lbl">Gols do Miguel</div>
-      </div>
-      <div class="stat-box" style="border-top:2px solid var(--isaac)">
-        <div class="stat-val" style="color:var(--isaac)">${gI}</div>
-        <div class="stat-lbl">Gols do Isaac</div>
-      </div>
-      <div class="stat-box" style="border-top:2px solid var(--purple)">
-        <div class="stat-val" style="color:var(--purple)">${s.pen}</div>
-        <div class="stat-lbl">Pênaltis Totais</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-val">${winPct}</div>
-        <div class="stat-lbl">Jogos Decididos</div>
-      </div>
+      <div class="stat-box" style="border-top:2px solid var(--miguel)"><div class="stat-val" style="color:var(--miguel)">${s.m}</div><div class="stat-lbl">Vitórias Miguel</div></div>
+      <div class="stat-box" style="border-top:2px solid var(--isaac)"><div class="stat-val" style="color:var(--isaac)">${s.i}</div><div class="stat-lbl">Vitórias Isaac</div></div>
+      <div class="stat-box" style="border-top:2px solid var(--gold)"><div class="stat-val" style="color:var(--gold)">${s.d}</div><div class="stat-lbl">Empates</div></div>
+      <div class="stat-box"><div class="stat-val">${s.total}</div><div class="stat-lbl">Partidas</div></div>
+      <div class="stat-box" style="border-top:2px solid var(--purple)"><div class="stat-val" style="color:var(--purple)">${s.pen}</div><div class="stat-lbl">Pênaltis</div></div>
+      <div class="stat-box" style="border-top:2px solid #f97316"><div class="stat-val" style="color:#fb923c">${overtimeTotal}</div><div class="stat-lbl">Prorrogações</div></div>
     </div>
 
-    <!-- H2H -->
+    <div class="sport-summary-grid">${sportCards}</div>
+
     <div class="card card-glow-gold" style="margin-bottom:20px">
       <h3 class="card-title">🥊 Confronto Direto</h3>
       <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:24px;text-align:center;align-items:center">
-        <div>
-          <div style="font-family:var(--font-d);font-size:52px;color:var(--miguel)">${s.m}</div>
-          <div style="font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-bottom:10px">VITÓRIAS</div>
-          <div style="font-size:12px;color:var(--text-dim)">${gM} gols marcados</div>
-          <div style="font-size:12px;color:var(--text-dim)">${penM} vitória${penM!==1?'s':''} por pênaltis</div>
-        </div>
-        <div>
-          <div style="font-family:var(--font-d);font-size:32px;color:var(--gold)">${s.d}</div>
-          <div style="font-size:10px;letter-spacing:2px;color:var(--text-dim)">EMPATES</div>
-        </div>
-        <div>
-          <div style="font-family:var(--font-d);font-size:52px;color:var(--isaac)">${s.i}</div>
-          <div style="font-size:10px;letter-spacing:2px;color:var(--text-dim);margin-bottom:10px">VITÓRIAS</div>
-          <div style="font-size:12px;color:var(--text-dim)">${gI} gols marcados</div>
-          <div style="font-size:12px;color:var(--text-dim)">${penI} vitória${penI!==1?'s':''} por pênaltis</div>
-        </div>
+        <div><div style="font-family:var(--font-d);font-size:52px;color:var(--miguel)">${s.m}</div><div style="font-size:10px;letter-spacing:2px;color:var(--text-dim)">VITÓRIAS MIGUEL</div></div>
+        <div><div style="font-family:var(--font-d);font-size:32px;color:var(--gold)">${s.d}</div><div style="font-size:10px;letter-spacing:2px;color:var(--text-dim)">EMPATES</div><div style="font-size:11px;color:var(--text-dim);margin-top:6px">${decidedPct} decididos</div></div>
+        <div><div style="font-family:var(--font-d);font-size:52px;color:var(--isaac)">${s.i}</div><div style="font-size:10px;letter-spacing:2px;color:var(--text-dim)">VITÓRIAS ISAAC</div></div>
       </div>
     </div>
 
-    <!-- Biggest win -->
-    ${bigWin ? `
-    <div class="card" style="margin-bottom:20px">
-      <h3 class="card-title">💥 Maior Placar</h3>
-      ${matchCard(bigWin, false)}
-    </div>` : ''}
+    ${biggestCards}
 
-    <!-- Per round -->
     <div class="card" style="margin-bottom:20px">
       <h3 class="card-title">📅 Por Rodada</h3>
-      ${!ST.rounds.length ? '<div style="color:var(--text-dim)">Nenhuma rodada criada</div>' :
-        ST.rounds.map(r => {
-          const ms = ST.matches.filter(m => m.round === r);
-          const mw = ms.filter(m => m.winner==='miguel').length;
-          const iw = ms.filter(m => m.winner==='isaac').length;
-          const dr = ms.filter(m => m.winner==='draw').length;
-          return `<div class="h2h-row">
-            <span style="font-family:var(--font-d);letter-spacing:1px;color:var(--gold)">${escHtml(r)}</span>
-            <span style="color:var(--text-dim);font-size:13px">${ms.length} jogo${ms.length!==1?'s':''}</span>
-            <div style="display:flex;gap:6px">
-              ${mw?`<span class="badge badge-m">M:${mw}</span>`:''}
-              ${dr?`<span class="badge badge-d">E:${dr}</span>`:''}
-              ${iw?`<span class="badge badge-i">I:${iw}</span>`:''}
-            </div>
-          </div>`;
-        }).join('')
-      }
+      ${!visibleRounds.length ? '<div style="color:var(--text-dim)">Nenhuma rodada com partidas nesta modalidade</div>' : visibleRounds.map(round => {
+        const matches = filteredMatches.filter(match => match.round === round);
+        const roundScore = scores(matches);
+        return `<div class="h2h-row"><span style="font-family:var(--font-d);letter-spacing:1px;color:var(--gold)">${escHtml(round)}</span><span style="color:var(--text-dim);font-size:13px">${matches.length} jogo${matches.length!==1?'s':''}</span><div style="display:flex;gap:6px">${roundScore.m?`<span class="badge badge-m">M:${roundScore.m}</span>`:''}${roundScore.d?`<span class="badge badge-d">E:${roundScore.d}</span>`:''}${roundScore.i?`<span class="badge badge-i">I:${roundScore.i}</span>`:''}</div></div>`;
+      }).join('')}
     </div>
 
-    <!-- Top teams -->
-    ${topTeams.length ? `
-    <div class="card" style="margin-bottom:20px">
-      <h3 class="card-title">⭐ Times Mais Utilizados</h3>
-      ${topTeams.map(([name, cnt], idx) => `
-        <div class="h2h-row">
-          <span style="color:var(--gold);font-family:var(--font-d);font-size:18px">#${idx+1}</span>
-          <span style="font-weight:600">${escHtml(name)}</span>
-          <span style="color:var(--text-dim);font-size:13px">${cnt} jogo${cnt!==1?'s':''}</span>
-        </div>`).join('')}
-    </div>` : ''}
+    ${topTeams.length ? `<div class="card" style="margin-bottom:20px"><h3 class="card-title">⭐ Equipes Mais Utilizadas</h3>${topTeams.map(([name, count], index) => `<div class="h2h-row"><span style="color:var(--gold);font-family:var(--font-d);font-size:18px">#${index+1}</span><span style="font-weight:600">${escHtml(name)}</span><span style="color:var(--text-dim);font-size:13px">${count} jogo${count!==1?'s':''}</span></div>`).join('')}</div>` : ''}
   `;
 }
 
@@ -2968,7 +3652,7 @@ function renderStats() {
 ============================================================ */
 function clearAll() {
   ensureDefaultLeagues();
-  persistStateToFirebase({ rounds:[], leagues: ST.leagues || [], matches:[] });
+  persistStateToFirebase({ rounds:[], roundMeta:{}, leagues: ST.leagues || [], matches:[] });
   updateHeader(); render('dashboard');
   toast('🗑️ Todos os dados apagados');
 }
@@ -2991,6 +3675,26 @@ function escHtml(s) {
 function setTxt(id, v) {
   const el = document.getElementById(id);
   if (el) el.textContent = v;
+}
+
+function matchDateTimestamp(match) {
+  const value = match && match.date;
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  const text = String(value || '').trim();
+  let parts = text.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (parts) return new Date(+parts[3], +parts[2] - 1, +parts[1]).getTime();
+  parts = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (parts) return new Date(+parts[1], +parts[2] - 1, +parts[3]).getTime();
+  const parsed = Date.parse(text);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function sortMatchesByDateDesc(matches) {
+  return [...matches].sort((a, b) => {
+    const dateDiff = matchDateTimestamp(b) - matchDateTimestamp(a);
+    if (dateDiff) return dateDiff;
+    return (Number(b.id) || 0) - (Number(a.id) || 0);
+  });
 }
 
 function todayStr() {
@@ -3020,9 +3724,11 @@ function dateInputToDisplay(value) {
    MASTER RENDER
 ============================================================ */
 function render(sec) {
+  syncScoreboardForSection(sec);
   updateHeader();
-  updateRoundSelects();
   updateLeagueSelects();
+  updateRoundSelects();
+  updateRoundLeagueSelect();
   switch(sec) {
     case 'dashboard':    renderDashboard(); break;
     case 'rodadas':      renderRounds();    break;
@@ -3040,16 +3746,24 @@ function renderCurrentSection() {
 
 function ensureDefaultRounds() {
   if (ST.rounds.length) return;
-  ['Rodada 1','Rodada 2','Oitavas','Quartas','Semifinal','Final 🏆'].forEach(r => ST.rounds.push(r));
+  ['Rodada 1','Rodada 2','Oitavas','Quartas','Semifinal','Final 🏆'].forEach(round => {
+    ST.rounds.push(round);
+    ST.roundMeta[round] = { sport: 'football', leagueId: '' };
+  });
 }
 
 function ensureDefaultLeagues() {
   if (!Array.isArray(ST.leagues)) ST.leagues = [];
+  ST.leagues = ST.leagues.filter(league => {
+    if (REMOVED_BASKETBALL_LEAGUE_IDS.has(league.id)) return false;
+    return sportForLeague(league) !== 'basketball' || ALLOWED_BASKETBALL_LEAGUE_IDS.has(league.id);
+  });
   DEFAULT_LEAGUES.forEach(league => {
     const existing = ST.leagues.find(l => l.id === league.id);
     if (existing) {
       existing.slug = league.slug;
       existing.logo = league.logo;
+      existing.sport = existing.sport || league.sport || 'football';
       existing.subtitle = existing.subtitle || league.subtitle;
       existing.description = existing.description || league.description;
     } else {
@@ -3058,9 +3772,12 @@ function ensureDefaultLeagues() {
   });
 }
 
-function getLeagueById(id) {
+function getLeagueById(id, sportId = 'football') {
   ensureDefaultLeagues();
-  return ST.leagues.find(l => l.id === id) || ST.leagues.find(l => l.id === 'amistosos') || DEFAULT_LEAGUES[0];
+  return ST.leagues.find(l => l.id === id) ||
+    ST.leagues.find(l => l.id === defaultLeagueIdForSport(sportId)) ||
+    DEFAULT_LEAGUES.find(l => l.id === defaultLeagueIdForSport(sportId)) ||
+    DEFAULT_LEAGUES[0];
 }
 
 function leagueSlug(league) {
@@ -3075,21 +3792,28 @@ function leagueSlug(league) {
 }
 
 function leagueLogo(league) {
-  return `assets/competitions/${leagueSlug(league)}.svg`;
+  return league.logo || (sportForLeague(league) === 'basketball'
+    ? `assets/leagues/${leagueSlug(league)}.svg`
+    : `assets/competitions/${leagueSlug(league)}.svg`);
 }
 
 function leagueForMatch(match) {
-  const league = getLeagueById(match.leagueId || 'amistosos');
+  const sportId = getMatchSport(match);
+  const originalLeagueId = match.leagueId || defaultLeagueIdForSport(sportId);
+  const effectiveLeagueId = effectiveLeagueIdForMatch(match);
+  const league = getLeagueById(effectiveLeagueId, sportId);
   return {
     id: league.id,
-    name: match.leagueName || league.name,
+    name: REMOVED_BASKETBALL_LEAGUE_IDS.has(originalLeagueId) ? league.name : match.leagueName || league.name,
+    sport: sportId,
     logo: leagueLogo(league),
+    fallbackLogo: leagueLogoFallback(sportId),
     description: league.description || ''
   };
 }
 
-function leagueStats(leagueId) {
-  const ms = ST.matches.filter(match => (match.leagueId || 'amistosos') === leagueId);
+function leagueStats(leagueId, matches = ST.matches) {
+  const ms = matches.filter(match => effectiveLeagueIdForMatch(match) === leagueId);
   return {
     total: ms.length,
     miguel: ms.filter(m => m.winner === 'miguel').length,

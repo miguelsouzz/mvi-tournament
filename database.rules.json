@@ -1,0 +1,13 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "mvi_tournament": {
+      "state": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.hasChildren(['state', 'updatedAt']) && newData.child('state').exists() && newData.child('updatedAt').isNumber()"
+      }
+    }
+  }
+}

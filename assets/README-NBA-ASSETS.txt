@@ -1,0 +1,44 @@
+NBA team logos
+Place these SVG files in assets/teams/basketball/
+
+atlanta-hawks.svg
+boston-celtics.svg
+brooklyn-nets.svg
+charlotte-hornets.svg
+chicago-bulls.svg
+cleveland-cavaliers.svg
+dallas-mavericks.svg
+denver-nuggets.svg
+detroit-pistons.svg
+golden-state-warriors.svg
+houston-rockets.svg
+indiana-pacers.svg
+los-angeles-clippers.svg
+los-angeles-lakers.svg
+memphis-grizzlies.svg
+miami-heat.svg
+milwaukee-bucks.svg
+minnesota-timberwolves.svg
+new-orleans-pelicans.svg
+new-york-knicks.svg
+oklahoma-city-thunder.svg
+orlando-magic.svg
+philadelphia-76ers.svg
+phoenix-suns.svg
+portland-trail-blazers.svg
+sacramento-kings.svg
+san-antonio-spurs.svg
+toronto-raptors.svg
+utah-jazz.svg
+washington-wizards.svg
+
+NBA league logos
+Place these SVG files in assets/leagues/
+
+nba-2k.svg
+nba-finals.svg
+
+Fallbacks already included
+
+assets/teams/basketball/default.svg
+assets/leagues/default.svg
