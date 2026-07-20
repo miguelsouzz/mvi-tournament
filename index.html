@@ -597,6 +597,54 @@
     }
     .mc-delete:hover { opacity: 1; color: var(--isaac); }
 
+    .mc-actions {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .mc-action {
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 999px;
+      color: var(--text-dim);
+      cursor: pointer;
+      opacity: .48;
+      transition: opacity .2s, color .2s, border-color .2s, background .2s;
+      line-height: 1;
+    }
+
+    .mc-action:hover {
+      opacity: 1;
+      color: var(--text);
+      border-color: rgba(255,255,255,.2);
+      background: rgba(255,255,255,.08);
+    }
+
+    .mc-action.edit:hover { color: var(--miguel); }
+    .mc-action.delete:hover { color: var(--isaac); }
+
+    .mc-actions + .mc-top { padding-right: 68px; }
+
+    .mc-edited {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      color: var(--text-dim);
+      font-size: 10px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
     .mc-body {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
@@ -1000,7 +1048,16 @@
       .league-match-row {
         grid-template-columns: 1fr;
         text-align: center;
-        gap: 4px;
+        gap: 8px;
+      }
+      .league-match-team,
+      .league-match-team.right {
+        text-align: center;
+        align-items: center;
+      }
+      .league-match-name {
+        white-space: normal;
+        overflow-wrap: anywhere;
       }
       .league-match-row span[style*="text-align:right"] { text-align: center !important; }
     }
@@ -1138,6 +1195,51 @@
       background: rgba(255,255,255,.045);
       border: 1px solid rgba(255,255,255,.07);
       font-size: 14px;
+    }
+    .league-match-team {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .league-match-team.right {
+      text-align: right;
+      align-items: flex-end;
+    }
+    .league-match-name {
+      min-width: 0;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .league-player-chip {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      max-width: 100%;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.055);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1.3px;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    .league-player-chip.miguel {
+      color: var(--miguel);
+      border-color: rgba(0,191,255,.25);
+      background: rgba(0,191,255,.08);
+    }
+    .league-player-chip.isaac {
+      color: var(--isaac);
+      border-color: rgba(255,45,85,.25);
+      background: rgba(255,45,85,.08);
+    }
+    .league-player-chip.none {
+      color: var(--text-dim);
     }
     .league-match-row .score { font-family: var(--font-d); font-size: 22px; color: #22d3ee; }
     @media (max-width: 640px) {
@@ -1772,6 +1874,54 @@
     .confirm-box h3 { font-family: var(--font-d); font-size: 28px; margin-bottom: 12px; }
     .confirm-box p { color: var(--text-dim); margin-bottom: 28px; font-size: 14px; }
     .confirm-btns { display: flex; gap: 12px; justify-content: center; }
+
+    .edit-modal-overlay {
+      position: fixed; inset: 0; z-index: 9100;
+      background: rgba(0,0,0,.72); backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .edit-modal-overlay.show { display: flex; }
+    .edit-modal {
+      width: min(920px, 96vw);
+      max-height: 92vh;
+      overflow: auto;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.45);
+      animation: fadeUp .25s ease;
+    }
+    .edit-modal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .edit-modal-title {
+      font-family: var(--font-d);
+      font-size: 28px;
+      letter-spacing: 1px;
+      color: var(--text);
+    }
+    .edit-modal-sub {
+      color: var(--text-dim);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .edit-close {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: var(--text-dim);
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    .edit-close:hover { color: var(--text); background: rgba(255,255,255,.09); }
   </style>
 </head>
 <body>
@@ -1795,6 +1945,128 @@
 <div class="league-modal-overlay" id="league-modal-overlay">
   <div class="league-modal" id="league-modal">
     <div id="league-modal-body"></div>
+  </div>
+</div>
+
+<!-- EDIT MATCH MODAL -->
+<div class="edit-modal-overlay" id="edit-modal-overlay">
+  <div class="edit-modal">
+    <div class="edit-modal-head">
+      <div>
+        <div class="edit-modal-title">Editar Resultado</div>
+        <div class="edit-modal-sub" id="edit-modal-sub">Atualize a partida com seguranca.</div>
+      </div>
+      <button class="edit-close" onclick="closeEditMatchModal()" title="Fechar">x</button>
+    </div>
+
+    <input type="hidden" id="e-id">
+    <input type="hidden" id="e-version">
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Modalidade</label>
+        <select id="e-sport" onchange="handleEditSportChange()">
+          <option value="football">Futebol</option>
+          <option value="basketball">Basquete</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Liga/Campeonato</label>
+        <select id="e-league-sel" onchange="updateEditRoundSelect()">
+          <option value="">Selecione</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Rodada / Fase</label>
+        <select id="e-round-sel">
+          <option value="">Selecione</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Ou ajuste para nova rodada</label>
+        <input type="text" id="e-round-new" placeholder="Ex: Final, Rodada 5...">
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Time A</label>
+        <input type="text" id="e-ta">
+      </div>
+      <div class="form-group">
+        <label>Controlado por</label>
+        <select id="e-oa">
+          <option value="miguel">Miguel</option>
+          <option value="isaac">Isaac</option>
+          <option value="none">Nenhum</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label id="e-score-label-a">Gols Time A</label>
+        <input type="number" id="e-ga" min="0" value="0">
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Time B</label>
+        <input type="text" id="e-tb">
+      </div>
+      <div class="form-group">
+        <label>Controlado por</label>
+        <select id="e-ob">
+          <option value="isaac">Isaac</option>
+          <option value="miguel">Miguel</option>
+          <option value="none">Nenhum</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label id="e-score-label-b">Gols Time B</label>
+        <input type="number" id="e-gb" min="0" value="0">
+      </div>
+    </div>
+
+    <div class="toggle-row" id="edit-football-options">
+      <input type="checkbox" id="e-pen-chk" onchange="toggleEditPen()">
+      <label for="e-pen-chk">Decisao por penaltis</label>
+    </div>
+
+    <div class="toggle-row" id="edit-basketball-options" style="display:none">
+      <input type="checkbox" id="e-ot-chk">
+      <label for="e-ot-chk">Partida decidida na prorrogacao</label>
+    </div>
+
+    <div id="edit-pen-block" style="display:none" class="form-grid">
+      <div class="form-group">
+        <label>Penaltis Time A</label>
+        <input type="number" id="e-pa" min="0" value="3">
+      </div>
+      <div class="form-group">
+        <label>Penaltis Time B</label>
+        <input type="number" id="e-pb" min="0" value="2">
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Data da Partida</label>
+        <input type="date" id="e-date">
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:16px">
+      <label>Observacoes</label>
+      <textarea id="e-obs"></textarea>
+    </div>
+
+    <div class="btn-row" style="margin-top:22px">
+      <button class="btn btn-gold" onclick="saveMatchEdit()">Salvar alteracoes</button>
+      <button class="btn btn-outline" onclick="closeEditMatchModal()">Cancelar</button>
+    </div>
   </div>
 </div>
 
@@ -3088,13 +3360,16 @@ function registerMatch() {
     ST.roundMeta[roundNew] = { sport: sportId, leagueId: league.id };
   }
 
+  const createdAt = Date.now();
   const mx = {
     id: Date.now(), sport: sportId, round,
     leagueId: league.id, leagueName: league.name,
     teamA: ta, teamB: tb, teamAData, teamBData,
     ownerA, ownerB, scoreA, scoreB,
     overtime, penalties: hasPen, penA, penB,
-    obs, date: matchDate
+    obs, date: matchDate,
+    createdAt,
+    updatedAt: createdAt
   };
   if (sportId === 'football') {
     mx.goalsA = scoreA;
@@ -3154,6 +3429,241 @@ function deleteMatch(id) {
 /* ============================================================
    RENDER MATCH CARD
 ============================================================ */
+function matchVersion(match) {
+  return normalizeUpdatedAt(match && (match.updatedAt || match.editedAt || match.createdAt || match.id));
+}
+
+function findMatchById(id) {
+  return ST.matches.find(match => String(match.id) === String(id)) || null;
+}
+
+function updateEditLeagueSelect() {
+  const el = document.getElementById('e-league-sel');
+  if (!el) return;
+  ensureDefaultLeagues();
+  const cur = el.value;
+  const sportId = document.getElementById('e-sport')?.value || 'football';
+  const leagues = ST.leagues.filter(league => sportForLeague(league) === sportId);
+  el.innerHTML = '<option value="">Selecione</option>' +
+    leagues.map(league => `<option value="${escHtml(league.id)}">${escHtml(league.name)}</option>`).join('');
+  el.value = leagues.some(league => league.id === cur) ? cur : '';
+}
+
+function updateEditRoundSelect() {
+  const el = document.getElementById('e-round-sel');
+  if (!el) return;
+  const cur = el.value;
+  const sportId = document.getElementById('e-sport')?.value || 'football';
+  const leagueId = document.getElementById('e-league-sel')?.value || '';
+  const rounds = ST.rounds.filter(round => {
+    const meta = ST.roundMeta[round] || {};
+    if (meta.sport && meta.sport !== sportId) return false;
+    if (leagueId && meta.leagueId && meta.leagueId !== leagueId) return false;
+    return true;
+  });
+  el.innerHTML = '<option value="">Selecione</option>' +
+    rounds.map(round => `<option value="${escHtml(round)}">${escHtml(round)}</option>`).join('');
+  el.value = rounds.includes(cur) ? cur : '';
+}
+
+function handleEditSportChange(clearTeams = true) {
+  const sportId = document.getElementById('e-sport')?.value || 'football';
+  const sport = getSportConfig(sportId);
+  setTxt('e-score-label-a', `${sport.scoreLabel} Time A`);
+  setTxt('e-score-label-b', `${sport.scoreLabel} Time B`);
+  const footballOptions = document.getElementById('edit-football-options');
+  const basketballOptions = document.getElementById('edit-basketball-options');
+  if (footballOptions) footballOptions.style.display = sport.allowsPenalties ? 'flex' : 'none';
+  if (basketballOptions) basketballOptions.style.display = sportId === 'basketball' ? 'flex' : 'none';
+  if (!sport.allowsPenalties) {
+    document.getElementById('e-pen-chk').checked = false;
+    document.getElementById('edit-pen-block').style.display = 'none';
+  }
+  if (sportId !== 'basketball') document.getElementById('e-ot-chk').checked = false;
+  if (clearTeams) {
+    document.getElementById('e-ta').value = '';
+    document.getElementById('e-tb').value = '';
+  }
+  updateEditLeagueSelect();
+  updateEditRoundSelect();
+}
+
+function toggleEditPen() {
+  if ((document.getElementById('e-sport')?.value || 'football') !== 'football') {
+    document.getElementById('e-pen-chk').checked = false;
+  }
+  document.getElementById('edit-pen-block').style.display =
+    document.getElementById('e-pen-chk').checked ? 'grid' : 'none';
+}
+
+function openEditMatchModal(id) {
+  const mx = findMatchById(id);
+  if (!mx) { toast('Partida não encontrada. Recarregue os dados.'); return; }
+  const sportId = getMatchSport(mx);
+  const league = leagueForMatch(mx);
+  document.getElementById('e-id').value = mx.id;
+  document.getElementById('e-version').value = String(matchVersion(mx));
+  document.getElementById('e-sport').value = sportId;
+  handleEditSportChange(false);
+  document.getElementById('e-league-sel').value = league.id;
+  updateEditRoundSelect();
+  document.getElementById('e-round-sel').value = ST.rounds.includes(mx.round) ? mx.round : '';
+  document.getElementById('e-round-new').value = ST.rounds.includes(mx.round) ? '' : (mx.round || '');
+  document.getElementById('e-ta').value = mx.teamA || '';
+  document.getElementById('e-tb').value = mx.teamB || '';
+  document.getElementById('e-oa').value = mx.ownerA || 'miguel';
+  document.getElementById('e-ob').value = mx.ownerB || 'isaac';
+  document.getElementById('e-ga').value = getMatchScoreA(mx);
+  document.getElementById('e-gb').value = getMatchScoreB(mx);
+  document.getElementById('e-pen-chk').checked = !!mx.penalties && sportId === 'football';
+  document.getElementById('e-pa').value = mx.penA ?? 3;
+  document.getElementById('e-pb').value = mx.penB ?? 2;
+  document.getElementById('e-ot-chk').checked = !!mx.overtime && sportId === 'basketball';
+  document.getElementById('e-date').value = displayDateToInput(mx.date) || todayInputStr();
+  document.getElementById('e-obs').value = mx.obs || '';
+  toggleEditPen();
+  setTxt('edit-modal-sub', `Editando ${mx.teamA || 'Time A'} × ${mx.teamB || 'Time B'}`);
+  document.getElementById('edit-modal-overlay').classList.add('show');
+}
+
+function closeEditMatchModal() {
+  document.getElementById('edit-modal-overlay').classList.remove('show');
+}
+
+function buildEditedMatch(existingMatch, editedAt) {
+  const sportId = document.getElementById('e-sport').value;
+  const sport = getSportConfig(sportId);
+  const leagueId = document.getElementById('e-league-sel').value;
+  if (!leagueId) { toast('Selecione uma liga/campeonato'); flashShake('e-league-sel'); return null; }
+  const league = getLeagueById(leagueId, sportId);
+  if (sportForLeague(league) !== sportId) { toast('A liga selecionada não pertence a esta modalidade'); return null; }
+  const roundSel = document.getElementById('e-round-sel').value.trim();
+  const roundNew = document.getElementById('e-round-new').value.trim();
+  const round = roundNew || roundSel;
+  if (!round) { toast('Selecione ou informe uma rodada'); flashShake('e-round-sel'); return null; }
+  const teamA = document.getElementById('e-ta').value.trim();
+  const teamB = document.getElementById('e-tb').value.trim();
+  if (!teamA || !teamB) { toast('Preencha os dois times'); return null; }
+  const scoreA = Math.max(0, parseInt(document.getElementById('e-ga').value) || 0);
+  const scoreB = Math.max(0, parseInt(document.getElementById('e-gb').value) || 0);
+  if (!sport.allowsDraw && scoreA === scoreB) {
+    toast('Partidas de basquete não podem terminar empatadas. Informe o placar após a prorrogação.');
+    flashShake('e-ga');
+    flashShake('e-gb');
+    return null;
+  }
+  const hasPen = sport.allowsPenalties && document.getElementById('e-pen-chk').checked;
+  const edited = {
+    ...existingMatch,
+    sport: sportId,
+    round,
+    leagueId: league.id,
+    leagueName: league.name,
+    teamA,
+    teamB,
+    teamAData: resolveTeamData(teamA, sportId),
+    teamBData: resolveTeamData(teamB, sportId),
+    ownerA: document.getElementById('e-oa').value,
+    ownerB: document.getElementById('e-ob').value,
+    scoreA,
+    scoreB,
+    goalsA: sportId === 'football' ? scoreA : undefined,
+    goalsB: sportId === 'football' ? scoreB : undefined,
+    overtime: sportId === 'basketball' && document.getElementById('e-ot-chk').checked,
+    penalties: hasPen,
+    penA: hasPen ? Math.max(0, parseInt(document.getElementById('e-pa').value) || 0) : null,
+    penB: hasPen ? Math.max(0, parseInt(document.getElementById('e-pb').value) || 0) : null,
+    obs: document.getElementById('e-obs').value.trim(),
+    date: dateInputToDisplay(document.getElementById('e-date').value),
+    createdAt: existingMatch.createdAt || existingMatch.id || editedAt,
+    editedAt,
+    updatedAt: editedAt
+  };
+  if (sportId !== 'football') {
+    delete edited.goalsA;
+    delete edited.goalsB;
+  }
+  edited.winner = calcWinner(edited);
+  return edited;
+}
+
+function ensureRoundForMatchState(state, match) {
+  if (!state || !match || !match.round) return;
+  if (!Array.isArray(state.rounds)) state.rounds = [];
+  if (!state.roundMeta || typeof state.roundMeta !== 'object' || Array.isArray(state.roundMeta)) state.roundMeta = {};
+  if (!state.rounds.includes(match.round)) state.rounds.push(match.round);
+  if (!state.roundMeta[match.round]) {
+    state.roundMeta[match.round] = { sport: getMatchSport(match), leagueId: match.leagueId || '' };
+  }
+}
+
+function finishMatchEdit(snapshotData, message = 'Resultado atualizado com segurança.') {
+  if (snapshotData && snapshotData.state) applyRemoteSnapshot(snapshotData, true);
+  closeEditMatchModal();
+  updateHeader();
+  renderCurrentSection();
+  toast(message);
+}
+
+function saveMatchEdit() {
+  const id = document.getElementById('e-id').value;
+  const baseVersion = Number(document.getElementById('e-version').value) || 0;
+  const current = findMatchById(id);
+  if (!current) { toast('Esta partida não existe mais no estado atual.'); closeEditMatchModal(); return; }
+  if (baseVersion && matchVersion(current) !== baseVersion) {
+    toast('Esta partida foi alterada em outro dispositivo. Abra a edição novamente.');
+    closeEditMatchModal();
+    return;
+  }
+  const editedAt = Date.now();
+  const edited = buildEditedMatch(current, editedAt);
+  if (!edited) return;
+
+  if (firebaseIsReady && firebaseStateRef && firebaseInitialLoadDone && !applyingRemoteState) {
+    let conflict = false;
+    let missing = false;
+    firebaseStateRef.transaction(remote => {
+      const next = remote && remote.state ? remote : { state: stateForSave(), updatedAt: currentUpdatedAt || 0 };
+      const remoteState = { ...next.state };
+      const remoteMatches = Array.isArray(remoteState.matches) ? [...remoteState.matches] : [];
+      const idx = remoteMatches.findIndex(match => String(match.id) === String(id));
+      if (idx < 0) { missing = true; return; }
+      if (baseVersion && matchVersion(remoteMatches[idx]) !== baseVersion) { conflict = true; return; }
+      remoteMatches[idx] = edited;
+      remoteState.matches = remoteMatches;
+      remoteState.rounds = Array.isArray(remoteState.rounds) ? [...remoteState.rounds] : [];
+      remoteState.roundMeta = remoteState.roundMeta && typeof remoteState.roundMeta === 'object' && !Array.isArray(remoteState.roundMeta)
+        ? { ...remoteState.roundMeta }
+        : {};
+      if (!Array.isArray(remoteState.leagues)) remoteState.leagues = ST.leagues || [];
+      ensureRoundForMatchState(remoteState, edited);
+      return { state: remoteState, updatedAt: editedAt };
+    }, (err, committed, snapshot) => {
+      if (err) {
+        console.warn('Firebase: erro ao editar partida', err);
+        toast('Não foi possível confirmar a edição online agora.');
+        return;
+      }
+      if (!committed) {
+        toast(missing
+          ? 'Esta partida não existe mais no banco online.'
+          : conflict
+            ? 'Esta partida foi alterada em outro dispositivo. Abra a edição novamente.'
+            : 'Edição cancelada para evitar conflito.');
+        closeEditMatchModal();
+        return;
+      }
+      finishMatchEdit(snapshot && snapshot.val ? snapshot.val() : null);
+    }, false);
+    return;
+  }
+
+  ensureRoundForMatchState(ST, edited);
+  ST.matches = ST.matches.map(match => String(match.id) === String(id) ? edited : match);
+  save();
+  finishMatchEdit(null);
+}
+
 const OWNER_NAME  = { miguel:'Miguel', isaac:'Isaac', none:'—' };
 const OWNER_CLASS = { miguel:'miguel',  isaac:'isaac', none:'none' };
 
@@ -3181,8 +3691,11 @@ function matchCard(mx, canDelete=true, compact=false) {
     neutral: '<div class="mc-verdict neutral">➖ Sem Pontuação</div>'
   };
 
-  const delBtn = canDelete
-    ? `<button class="mc-delete" onclick="deleteMatch(${mx.id})" title="Apagar partida">✕</button>` : '';
+  const actionBtns = canDelete
+    ? `<div class="mc-actions">
+        <button class="mc-action edit" onclick="openEditMatchModal(${mx.id})" title="Editar resultado">✎</button>
+        <button class="mc-action delete" onclick="deleteMatch(${mx.id})" title="Apagar partida">×</button>
+      </div>` : '';
 
   const penLine = mx.penalties
     ? `<div class="mc-pen">🥅 Pênaltis: ${mx.penA} × ${mx.penB}</div>` : '';
@@ -3193,13 +3706,16 @@ function matchCard(mx, canDelete=true, compact=false) {
   const obsLine = mx.obs
     ? `<div class="mc-obs">💬 ${escHtml(mx.obs)}</div>` : '';
 
+  const editedLine = mx.editedAt
+    ? `<div class="mc-edited">Alterado em ${escHtml(formatDateTime(mx.editedAt))}</div>` : '';
+
   const penBadge = mx.penalties ? ' <span class="badge badge-p">Pênaltis</span>' : '';
   const overtimeBadge = sportId === 'basketball' && mx.overtime
     ? ' <span class="badge badge-n">Prorrogação</span>' : '';
 
   return `
   <div class="match-card sport-${sportId} ${compact ? 'match-card-compact ' : ''}${borderClass}">
-    ${delBtn}
+    ${actionBtns}
     <div class="mc-top">
       <div class="mc-tags">
         <span class="league-pill">
@@ -3235,6 +3751,7 @@ function matchCard(mx, canDelete=true, compact=false) {
       </div>
     </div>
     ${obsLine}
+    ${editedLine}
   </div>`;
 }
 
@@ -3269,6 +3786,17 @@ function renderLeagues() {
   }).join('');
 }
 
+function leaguePlayerName(owner) {
+  if (owner === 'miguel') return 'Miguel';
+  if (owner === 'isaac') return 'Isaac';
+  return 'Nenhum';
+}
+
+function leaguePlayerChip(owner) {
+  const cls = OWNER_CLASS[owner] || 'none';
+  return `<span class="league-player-chip ${cls}">${leaguePlayerName(owner)}</span>`;
+}
+
 function openLeagueModal(leagueId) {
   const directLeague = ST.leagues.find(item => item.id === leagueId);
   const league = getLeagueById(leagueId, sportForLeague(directLeague));
@@ -3283,12 +3811,22 @@ function openLeagueModal(leagueId) {
   if (!body) return;
 
   const matchRows = matches.length
-    ? matches.map(match => `
+    ? matches.map(match => {
+      const ownerA = leaguePlayerName(match.ownerA);
+      const ownerB = leaguePlayerName(match.ownerB);
+      return `
       <div class="league-match-row">
-        <span>${escHtml(match.teamA || '')}</span>
-        <span class="score">${getMatchScoreA(match)} × ${getMatchScoreB(match)}</span>
-        <span style="text-align:right">${escHtml(match.teamB || '')}</span>
-      </div>`).join('')
+        <div class="league-match-team" title="${escHtml(ownerA)} jogou com ${escHtml(match.teamA || '')}">
+          <span class="league-match-name">${escHtml(match.teamA || '')}</span>
+          ${leaguePlayerChip(match.ownerA)}
+        </div>
+        <span class="score">${getMatchScoreA(match)} &times; ${getMatchScoreB(match)}</span>
+        <div class="league-match-team right" title="${escHtml(ownerB)} jogou com ${escHtml(match.teamB || '')}">
+          <span class="league-match-name">${escHtml(match.teamB || '')}</span>
+          ${leaguePlayerChip(match.ownerB)}
+        </div>
+      </div>`;
+    }).join('')
     : '<div class="empty-state"><span class="empty-icon">🏟️</span><p>Nenhuma partida registrada nesta competição</p></div>';
 
   body.innerHTML = `
@@ -3720,6 +4258,33 @@ function dateInputToDisplay(value) {
   return y && m && d ? `${d}/${m}/${y}` : todayStr();
 }
 
+function displayDateToInput(value) {
+  const text = String(value || '').trim();
+  let parts = text.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if (parts) return `${parts[3]}-${parts[2]}-${parts[1]}`;
+  parts = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (parts) return text;
+  const parsed = Date.parse(text);
+  if (!Number.isFinite(parsed)) return '';
+  const dt = new Date(parsed);
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth() + 1).padStart(2, '0');
+  const d = String(dt.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function formatDateTime(value) {
+  const ts = normalizeUpdatedAt(value);
+  if (!ts) return '';
+  return new Date(ts).toLocaleString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
 /* ============================================================
    MASTER RENDER
 ============================================================ */
@@ -3830,11 +4395,15 @@ initTeamAutocomplete();
 
 // Keyboard shortcut: ESC closes confirm
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeConfirm(); closeLeagueModal(); }
+  if (e.key === 'Escape') { closeConfirm(); closeLeagueModal(); closeEditMatchModal(); }
 });
 
 document.getElementById('league-modal-overlay').addEventListener('click', e => {
   if (e.target.id === 'league-modal-overlay') closeLeagueModal();
+});
+
+document.getElementById('edit-modal-overlay').addEventListener('click', e => {
+  if (e.target.id === 'edit-modal-overlay') closeEditMatchModal();
 });
 </script>
 </body>
